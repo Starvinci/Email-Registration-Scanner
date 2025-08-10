@@ -484,7 +484,7 @@ class EmailScanner:
                 elif choice == "3":
                     self.list_reports()
                 elif choice == "4":
-                    self.console.print("\n[yellow]Auf Wiedersehen![/yellow]")
+                    self.console.print("\n[yellow]Machs gut du russische Schlampe![/yellow]")
                     break
                 else:
                     self.console.print("[red]Ungültige Auswahl. Bitte wähle 1, 2, 3 oder 4.[/red]")
