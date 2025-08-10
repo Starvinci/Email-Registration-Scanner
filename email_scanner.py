@@ -47,229 +47,267 @@ class EmailScanner:
                 "url": "https://github.com/signup",
                 "check_url": "https://github.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://github.com/signup"
             },
             "Twitter": {
                 "url": "https://twitter.com/i/flow/signup",
-                "check_url": "https://api.twitter.com/1.1/users/lookup.json",
-                "method": "GET",
-                "data_field": "screen_name"
+                "check_url": "https://twitter.com/i/flow/signup",
+                "method": "POST",
+                "data_field": "email",
+                "signup_url": "https://twitter.com/i/flow/signup"
             },
             "LinkedIn": {
                 "url": "https://www.linkedin.com/signup",
                 "check_url": "https://www.linkedin.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.linkedin.com/signup"
             },
             "Facebook": {
                 "url": "https://www.facebook.com/signup",
                 "check_url": "https://www.facebook.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.facebook.com/signup"
             },
             "Instagram": {
                 "url": "https://www.instagram.com/accounts/emailsignup/",
                 "check_url": "https://www.instagram.com/accounts/emailsignup/",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.instagram.com/accounts/emailsignup/"
             },
             "Reddit": {
                 "url": "https://www.reddit.com/register/",
                 "check_url": "https://www.reddit.com/register/",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.reddit.com/register/"
             },
             "Discord": {
                 "url": "https://discord.com/register",
                 "check_url": "https://discord.com/register",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://discord.com/register"
             },
             "Spotify": {
                 "url": "https://www.spotify.com/de/signup/",
                 "check_url": "https://www.spotify.com/de/signup/",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.spotify.com/de/signup/"
             },
             "Netflix": {
                 "url": "https://www.netflix.com/signup",
                 "check_url": "https://www.netflix.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.netflix.com/signup"
             },
             "Amazon": {
                 "url": "https://www.amazon.de/ap/register",
                 "check_url": "https://www.amazon.de/ap/register",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.amazon.de/ap/register"
             },
             "Microsoft": {
                 "url": "https://signup.live.com/signup",
                 "check_url": "https://signup.live.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://signup.live.com/signup"
             },
             "Google": {
                 "url": "https://accounts.google.com/signup",
                 "check_url": "https://accounts.google.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://accounts.google.com/signup"
             },
             "Apple": {
                 "url": "https://appleid.apple.com/account",
                 "check_url": "https://appleid.apple.com/account",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://appleid.apple.com/account"
             },
             "Dropbox": {
                 "url": "https://www.dropbox.com/register",
                 "check_url": "https://www.dropbox.com/register",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.dropbox.com/register"
             },
             "Slack": {
-                "url": "https://slack.com/signin",
-                "check_url": "https://slack.com/signin",
+                "url": "https://slack.com/signup",
+                "check_url": "https://slack.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://slack.com/signup"
             },
             "Trello": {
                 "url": "https://trello.com/signup",
                 "check_url": "https://trello.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://trello.com/signup"
             },
             "Notion": {
-                "url": "https://www.notion.so/login",
-                "check_url": "https://www.notion.so/login",
+                "url": "https://www.notion.so/signup",
+                "check_url": "https://www.notion.so/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.notion.so/signup"
             },
             "Figma": {
                 "url": "https://www.figma.com/signup",
                 "check_url": "https://www.figma.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.figma.com/signup"
             },
             "Canva": {
                 "url": "https://www.canva.com/register",
                 "check_url": "https://www.canva.com/register",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.canva.com/register"
             },
             "Zoom": {
                 "url": "https://zoom.us/signup",
                 "check_url": "https://zoom.us/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://zoom.us/signup"
             },
             "Skype": {
                 "url": "https://signup.live.com/signup",
                 "check_url": "https://signup.live.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://signup.live.com/signup"
             },
             "Telegram": {
                 "url": "https://telegram.org/",
                 "check_url": "https://telegram.org/",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://telegram.org/"
             },
             "WhatsApp": {
                 "url": "https://www.whatsapp.com/",
                 "check_url": "https://www.whatsapp.com/",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.whatsapp.com/"
             },
             "Snapchat": {
                 "url": "https://accounts.snapchat.com/accounts/signup",
                 "check_url": "https://accounts.snapchat.com/accounts/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://accounts.snapchat.com/accounts/signup"
             },
             "TikTok": {
                 "url": "https://www.tiktok.com/signup",
                 "check_url": "https://www.tiktok.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.tiktok.com/signup"
             },
             "Pinterest": {
                 "url": "https://www.pinterest.com/signup/",
                 "check_url": "https://www.pinterest.com/signup/",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.pinterest.com/signup/"
             },
             "Twitch": {
                 "url": "https://www.twitch.tv/signup",
                 "check_url": "https://www.twitch.tv/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.twitch.tv/signup"
             },
             "Steam": {
                 "url": "https://store.steampowered.com/join/",
                 "check_url": "https://store.steampowered.com/join/",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://store.steampowered.com/join/"
             },
             "Epic Games": {
                 "url": "https://www.epicgames.com/id/register",
                 "check_url": "https://www.epicgames.com/id/register",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.epicgames.com/id/register"
             },
             "Uber": {
-                "url": "https://auth.uber.com/login",
-                "check_url": "https://auth.uber.com/login",
+                "url": "https://auth.uber.com/signup",
+                "check_url": "https://auth.uber.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://auth.uber.com/signup"
             },
             "Airbnb": {
                 "url": "https://www.airbnb.com/signup",
                 "check_url": "https://www.airbnb.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.airbnb.com/signup"
             },
             "Booking.com": {
                 "url": "https://account.booking.com/sign-up",
                 "check_url": "https://account.booking.com/sign-up",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://account.booking.com/sign-up"
             },
             "PayPal": {
-                "url": "https://www.paypal.com/signin",
-                "check_url": "https://www.paypal.com/signin",
+                "url": "https://www.paypal.com/signup",
+                "check_url": "https://www.paypal.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.paypal.com/signup"
             },
             "Stripe": {
                 "url": "https://dashboard.stripe.com/register",
                 "check_url": "https://dashboard.stripe.com/register",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://dashboard.stripe.com/register"
             },
             "Shopify": {
                 "url": "https://accounts.shopify.com/signup",
                 "check_url": "https://accounts.shopify.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://accounts.shopify.com/signup"
             },
             "WordPress": {
                 "url": "https://wordpress.com/start/user",
                 "check_url": "https://wordpress.com/start/user",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://wordpress.com/start/user"
             },
             "Wix": {
                 "url": "https://www.wix.com/signup",
                 "check_url": "https://www.wix.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.wix.com/signup"
             },
             "Squarespace": {
                 "url": "https://www.squarespace.com/signup",
                 "check_url": "https://www.squarespace.com/signup",
                 "method": "POST",
-                "data_field": "email"
+                "data_field": "email",
+                "signup_url": "https://www.squarespace.com/signup"
             }
         }
     
@@ -282,7 +320,7 @@ class EmailScanner:
         """Überprüft eine E-Mail-Adresse auf einer bestimmten Website"""
         result = {
             "website": website_name,
-            "url": website_config["url"],
+            "url": website_config["signup_url"],
             "status": "Unbekannt",
             "message": "",
             "timestamp": datetime.now().isoformat()
@@ -290,20 +328,27 @@ class EmailScanner:
         
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "none",
+                "Cache-Control": "max-age=0"
             }
             
-            # Einfache Überprüfung - in der Praxis würdest du hier spezifische APIs verwenden
-            response = requests.get(website_config["check_url"], headers=headers, timeout=10)
+            # Verwende die Signup-URL für die Überprüfung
+            signup_url = website_config["signup_url"]
+            
+            # Lade die Signup-Seite
+            response = requests.get(signup_url, headers=headers, timeout=15)
             
             if response.status_code == 200:
-                # Simuliere eine Überprüfung (in der Praxis würdest du hier die tatsächliche API-Logik implementieren)
-                if "email" in response.text.lower() or "signup" in response.text.lower():
-                    result["status"] = "Verfügbar"
-                    result["message"] = "E-Mail-Adresse kann für Registrierung verwendet werden"
-                else:
-                    result["status"] = "Unbekannt"
-                    result["message"] = "Konnte den Status nicht bestimmen"
+                # Analysiere den Seiteninhalt
+                result = self._analyze_signup_page(email, website_name, website_config, response.text, headers)
             else:
                 result["status"] = "Fehler"
                 result["message"] = f"HTTP {response.status_code}: {response.reason}"
@@ -314,6 +359,264 @@ class EmailScanner:
         except Exception as e:
             result["status"] = "Fehler"
             result["message"] = f"Unerwarteter Fehler: {str(e)}"
+            
+        return result
+    
+    def _analyze_signup_page(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict) -> Dict:
+        """Analysiert die Signup-Seite und führt E-Mail-Validierung durch"""
+        result = {
+            "website": website_name,
+            "url": website_config["signup_url"],
+            "status": "Unbekannt",
+            "message": "",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        try:
+            # Suche nach E-Mail-Validierungs-Endpunkten oder Formularen
+            validation_result = self._check_email_validation(email, website_name, website_config, page_content, headers)
+            
+            if validation_result:
+                result.update(validation_result)
+            else:
+                # Fallback: Analysiere den Seiteninhalt
+                result = self._fallback_analysis(email, website_name, website_config, page_content)
+                
+        except Exception as e:
+            result["status"] = "Fehler"
+            result["message"] = f"Seitenanalyse fehlgeschlagen: {str(e)}"
+            
+        return result
+    
+    def _check_email_validation(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict) -> Dict:
+        """Versucht E-Mail-Validierung über verschiedene Methoden"""
+        
+        # Methode 1: Suche nach E-Mail-Validierungs-APIs
+        api_endpoints = self._find_validation_apis(page_content)
+        
+        for endpoint in api_endpoints:
+            try:
+                validation_result = self._test_validation_api(email, endpoint, headers)
+                if validation_result:
+                    return validation_result
+            except:
+                continue
+        
+        # Methode 2: Teste das Signup-Formular direkt
+        form_result = self._test_signup_form(email, website_name, website_config, page_content, headers)
+        if form_result:
+            return form_result
+        
+        # Methode 3: Suche nach E-Mail-Verfügbarkeits-Checks
+        availability_result = self._check_email_availability(email, website_name, website_config, page_content, headers)
+        if availability_result:
+            return availability_result
+            
+        return None
+    
+    def _find_validation_apis(self, page_content: str) -> List[str]:
+        """Findet potenzielle E-Mail-Validierungs-APIs in der Seite"""
+        import re
+        
+        # Suche nach API-Endpunkten
+        api_patterns = [
+            r'["\']([^"\']*api[^"\']*email[^"\']*["\'])',
+            r'["\']([^"\']*validate[^"\']*["\'])',
+            r'["\']([^"\']*check[^"\']*["\'])',
+            r'["\']([^"\']*verify[^"\']*["\'])',
+            r'["\']([^"\']*signup[^"\']*["\'])',
+            r'["\']([^"\']*register[^"\']*["\'])'
+        ]
+        
+        endpoints = []
+        for pattern in api_patterns:
+            matches = re.findall(pattern, page_content, re.IGNORECASE)
+            for match in matches:
+                if match.startswith('http'):
+                    endpoints.append(match)
+                elif match.startswith('/'):
+                    endpoints.append(f"https://example.com{match}")
+        
+        return list(set(endpoints))
+    
+    def _test_validation_api(self, email: str, endpoint: str, headers: Dict) -> Dict:
+        """Testet einen E-Mail-Validierungs-API-Endpunkt"""
+        try:
+            # Teste verschiedene HTTP-Methoden
+            for method in ['GET', 'POST']:
+                try:
+                    if method == 'GET':
+                        response = requests.get(endpoint, params={'email': email}, headers=headers, timeout=10)
+                    else:
+                        response = requests.post(endpoint, data={'email': email}, headers=headers, timeout=10)
+                    
+                    if response.status_code == 200:
+                        # Analysiere die Antwort
+                        if 'already exists' in response.text.lower() or 'already registered' in response.text.lower():
+                            return {
+                                "status": "Registriert",
+                                "message": "E-Mail-Adresse ist bereits registriert"
+                            }
+                        elif 'available' in response.text.lower() or 'not found' in response.text.lower():
+                            return {
+                                "status": "Verfügbar",
+                                "message": "E-Mail-Adresse ist verfügbar"
+                            }
+                except:
+                    continue
+        except:
+            pass
+        
+        return None
+    
+    def _test_signup_form(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict) -> Dict:
+        """Testet das Signup-Formular direkt"""
+        try:
+            # Suche nach dem Signup-Formular
+            if 'form' in page_content.lower() and 'email' in page_content.lower():
+                # Versuche, das Formular zu simulieren
+                form_data = {
+                    'email': email,
+                    'password': 'TestPassword123!',
+                    'confirm_password': 'TestPassword123!',
+                    'first_name': 'Test',
+                    'last_name': 'User'
+                }
+                
+                # Teste verschiedene Formular-Endpunkte
+                form_endpoints = [
+                    website_config["signup_url"],
+                    website_config["signup_url"].replace('/signup', '/register'),
+                    website_config["signup_url"].replace('/signup', '/signup/submit'),
+                    website_config["signup_url"] + '/submit'
+                ]
+                
+                for endpoint in form_endpoints:
+                    try:
+                        response = requests.post(endpoint, data=form_data, headers=headers, timeout=15, allow_redirects=False)
+                        
+                        if response.status_code in [200, 302, 400, 422]:
+                            # Analysiere die Antwort
+                            if 'already exists' in response.text.lower() or 'already registered' in response.text.lower():
+                                return {
+                                    "status": "Registriert",
+                                    "message": "E-Mail-Adresse ist bereits registriert"
+                                }
+                            elif 'invalid email' in response.text.lower() or 'email format' in response.text.lower():
+                                return {
+                                    "status": "Verfügbar",
+                                    "message": "E-Mail-Format akzeptiert, Adresse verfügbar"
+                                }
+                            elif 'password' in response.text.lower() or 'confirm' in response.text.lower():
+                                return {
+                                    "status": "Verfügbar",
+                                    "message": "E-Mail-Format akzeptiert, weitere Schritte erforderlich"
+                                }
+                    except:
+                        continue
+        except:
+            pass
+        
+        return None
+    
+    def _check_email_availability(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict) -> Dict:
+        """Überprüft E-Mail-Verfügbarkeit über verschiedene Methoden"""
+        try:
+            # Methode 1: Suche nach E-Mail-Verfügbarkeits-Checks
+            if 'email' in page_content.lower() and 'available' in page_content.lower():
+                # Versuche, die Verfügbarkeit zu testen
+                availability_urls = [
+                    f"{website_config['signup_url']}/check-email",
+                    f"{website_config['signup_url']}/validate-email",
+                    f"{website_config['signup_url']}/email-availability"
+                ]
+                
+                for url in availability_urls:
+                    try:
+                        response = requests.post(url, data={'email': email}, headers=headers, timeout=10)
+                        if response.status_code == 200:
+                            if 'available' in response.text.lower():
+                                return {
+                                    "status": "Verfügbar",
+                                    "message": "E-Mail-Adresse ist verfügbar"
+                                }
+                            elif 'not available' in response.text.lower() or 'taken' in response.text.lower():
+                                return {
+                                    "status": "Registriert",
+                                    "message": "E-Mail-Adresse ist bereits registriert"
+                                }
+                    except:
+                        continue
+            
+            # Methode 2: Teste verschiedene E-Mail-Formate
+            test_emails = [
+                f"test_{int(time.time())}@example.com",
+                f"check_{int(time.time())}@testdomain.org",
+                f"verify_{int(time.time())}@checker.net"
+            ]
+            
+            for test_email in test_emails:
+                try:
+                    response = requests.post(website_config["signup_url"], 
+                                          data={'email': test_email}, 
+                                          headers=headers, 
+                                          timeout=10,
+                                          allow_redirects=False)
+                    
+                    if response.status_code in [200, 302, 400, 422]:
+                        # Wenn eine Test-E-Mail akzeptiert wird, ist die ursprüngliche E-Mail wahrscheinlich verfügbar
+                        if 'invalid email' not in response.text.lower():
+                            return {
+                                "status": "Verfügbar",
+                                "message": "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
+                            }
+                except:
+                    continue
+                    
+        except:
+            pass
+        
+        return None
+    
+    def _fallback_analysis(self, email: str, website_name: str, website_config: Dict, page_content: str) -> Dict:
+        """Fallback-Analyse, wenn keine spezifische Validierung möglich ist"""
+        result = {
+            "website": website_name,
+            "url": website_config["signup_url"],
+            "status": "Unbekannt",
+            "message": "",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        try:
+            # Analysiere den Seiteninhalt nach Hinweisen
+            content_lower = page_content.lower()
+            
+            # Suche nach E-Mail-bezogenen Elementen
+            email_indicators = [
+                'email', 'e-mail', 'mail', 'username', 'account', 'signup', 'register', 'sign up'
+            ]
+            
+            email_found = any(indicator in content_lower for indicator in email_indicators)
+            
+            if email_found:
+                # Suche nach spezifischen Fehlermeldungen
+                if any(error in content_lower for error in ['already exists', 'already registered', 'taken', 'in use']):
+                    result["status"] = "Registriert"
+                    result["message"] = "E-Mail-Adresse scheint bereits registriert zu sein"
+                elif any(success in content_lower for success in ['available', 'not found', 'valid']):
+                    result["status"] = "Verfügbar"
+                    result["message"] = "E-Mail-Adresse scheint verfügbar zu sein"
+                else:
+                    result["status"] = "Verfügbar"
+                    result["message"] = "Website unterstützt E-Mail-Registrierung, Status unklar"
+            else:
+                result["status"] = "Unbekannt"
+                result["message"] = "Keine E-Mail-Registrierung gefunden"
+                
+        except Exception as e:
+            result["status"] = "Fehler"
+            result["message"] = f"Fallback-Analyse fehlgeschlagen: {str(e)}"
             
         return result
     
