@@ -1,0 +1,336 @@
+{
+  "email": "tim.blankenstein01@gmail.com",
+  "scan_timestamp": "2025-08-10T17:02:52.051742",
+  "total_websites": 47,
+  "results": [
+    {
+      "website": "GitHub",
+      "url": "https://github.com/signup",
+      "status": "Verfügbar",
+      "message": "Signup-Seite enthält E-Mail-Feld",
+      "timestamp": "2025-08-10T17:00:29.644190"
+    },
+    {
+      "website": "Twitter",
+      "url": "https://twitter.com/i/flow/signup",
+      "status": "Verfügbar",
+      "message": "E-Mail-Adresse wurde akzeptiert",
+      "timestamp": "2025-08-10T17:00:31.802603"
+    },
+    {
+      "website": "LinkedIn",
+      "url": "https://www.linkedin.com/signup",
+      "status": "Verfügbar",
+      "message": "Signup-Seite enthält E-Mail-Feld",
+      "timestamp": "2025-08-10T17:00:32.624289"
+    },
+    {
+      "website": "Facebook",
+      "url": "https://www.facebook.com/signup",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:00:40.605031"
+    },
+    {
+      "website": "Instagram",
+      "url": "https://www.instagram.com/accounts/emailsignup/",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:00:44.097685"
+    },
+    {
+      "website": "Reddit",
+      "url": "https://www.reddit.com/register/",
+      "status": "Verfügbar",
+      "message": "E-Mail-Adresse scheint verfügbar zu sein",
+      "timestamp": "2025-08-10T17:00:47.293358"
+    },
+    {
+      "website": "Discord",
+      "url": "https://discord.com/register",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:00:49.542914"
+    },
+    {
+      "website": "Spotify",
+      "url": "https://www.spotify.com/de/signup/",
+      "status": "Verfügbar",
+      "message": "E-Mail-Überprüfungs-Endpunkt bestätigt Verfügbarkeit",
+      "timestamp": "2025-08-10T17:00:49.894943"
+    },
+    {
+      "website": "Netflix",
+      "url": "https://www.netflix.com/signup",
+      "status": "Verfügbar",
+      "message": "E-Mail-Überprüfungs-Endpunkt bestätigt Verfügbarkeit",
+      "timestamp": "2025-08-10T17:00:51.204303"
+    },
+    {
+      "website": "Amazon",
+      "url": "https://www.amazon.de/ap/register",
+      "status": "Fehler",
+      "message": "HTTP 404: Not Found",
+      "timestamp": "2025-08-10T17:00:52.017024"
+    },
+    {
+      "website": "Microsoft",
+      "url": "https://signup.live.com/signup",
+      "status": "Verfügbar",
+      "message": "E-Mail-Überprüfungs-Endpunkt bestätigt Verfügbarkeit",
+      "timestamp": "2025-08-10T17:00:54.846151"
+    },
+    {
+      "website": "Google",
+      "url": "https://accounts.google.com/signup",
+      "status": "Verfügbar",
+      "message": "Signup-Seite enthält E-Mail-Feld",
+      "timestamp": "2025-08-10T17:00:57.554055"
+    },
+    {
+      "website": "Apple",
+      "url": "https://appleid.apple.com/account",
+      "status": "Verfügbar",
+      "message": "E-Mail-Adresse scheint verfügbar zu sein",
+      "timestamp": "2025-08-10T17:01:04.780357"
+    },
+    {
+      "website": "Dropbox",
+      "url": "https://www.dropbox.com/register",
+      "status": "Verfügbar",
+      "message": "Signup-Seite enthält E-Mail-Feld",
+      "timestamp": "2025-08-10T17:01:05.296111"
+    },
+    {
+      "website": "Slack",
+      "url": "https://slack.com/signup",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:01:10.146389"
+    },
+    {
+      "website": "Trello",
+      "url": "https://trello.com/signup",
+      "status": "Verfügbar",
+      "message": "Website unterstützt E-Mail-Registrierung, Status unklar",
+      "timestamp": "2025-08-10T17:01:12.393029"
+    },
+    {
+      "website": "Notion",
+      "url": "https://www.notion.so/signup",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:01:15.201405"
+    },
+    {
+      "website": "Figma",
+      "url": "https://www.figma.com/signup",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:01:18.167808"
+    },
+    {
+      "website": "Canva",
+      "url": "https://www.canva.com/register",
+      "status": "Fehler",
+      "message": "HTTP 403: Forbidden",
+      "timestamp": "2025-08-10T17:01:18.172581"
+    },
+    {
+      "website": "Zoom",
+      "url": "https://zoom.us/signup",
+      "status": "Verfügbar",
+      "message": "Signup-Seite enthält E-Mail-Feld",
+      "timestamp": "2025-08-10T17:01:18.940514"
+    },
+    {
+      "website": "Skype",
+      "url": "https://signup.live.com/signup",
+      "status": "Verfügbar",
+      "message": "E-Mail-Überprüfungs-Endpunkt bestätigt Verfügbarkeit",
+      "timestamp": "2025-08-10T17:01:23.996815"
+    },
+    {
+      "website": "Telegram",
+      "url": "https://telegram.org/",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:01:27.935047"
+    },
+    {
+      "website": "WhatsApp",
+      "url": "https://www.whatsapp.com/",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:01:30.530108"
+    },
+    {
+      "website": "Snapchat",
+      "url": "https://accounts.snapchat.com/accounts/signup",
+      "status": "Verfügbar",
+      "message": "Signup-Seite enthält E-Mail-Feld",
+      "timestamp": "2025-08-10T17:01:31.329765"
+    },
+    {
+      "website": "TikTok",
+      "url": "https://www.tiktok.com/signup",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:01:39.559519"
+    },
+    {
+      "website": "Pinterest",
+      "url": "https://www.pinterest.com/signup/",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:01:43.942048"
+    },
+    {
+      "website": "Twitch",
+      "url": "https://www.twitch.tv/signup",
+      "status": "Verfügbar",
+      "message": "Website unterstützt E-Mail-Registrierung, Status unklar",
+      "timestamp": "2025-08-10T17:01:45.364243"
+    },
+    {
+      "website": "Steam",
+      "url": "https://store.steampowered.com/join/",
+      "status": "Verfügbar",
+      "message": "E-Mail-Adresse wurde akzeptiert",
+      "timestamp": "2025-08-10T17:01:45.831776"
+    },
+    {
+      "website": "Epic Games",
+      "url": "https://www.epicgames.com/id/register",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:01:48.631765"
+    },
+    {
+      "website": "Uber",
+      "url": "https://auth.uber.com/signup",
+      "status": "Fehler",
+      "message": "HTTP 404: Not Found",
+      "timestamp": "2025-08-10T17:01:48.636819"
+    },
+    {
+      "website": "Airbnb",
+      "url": "https://www.airbnb.com/signup",
+      "status": "Fehler",
+      "message": "HTTP 404: Not Found",
+      "timestamp": "2025-08-10T17:01:48.983835"
+    },
+    {
+      "website": "Booking.com",
+      "url": "https://account.booking.com/sign-up",
+      "status": "Fehler",
+      "message": "HTTP 404: Not Found",
+      "timestamp": "2025-08-10T17:01:49.866966"
+    },
+    {
+      "website": "PayPal",
+      "url": "https://www.paypal.com/signup",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:01:57.808781"
+    },
+    {
+      "website": "Stripe",
+      "url": "https://dashboard.stripe.com/register",
+      "status": "Verfügbar",
+      "message": "Website unterstützt E-Mail-Registrierung, Status unklar",
+      "timestamp": "2025-08-10T17:02:01.216581"
+    },
+    {
+      "website": "Shopify",
+      "url": "https://accounts.shopify.com/signup",
+      "status": "Verfügbar",
+      "message": "Signup-Seite enthält E-Mail-Feld",
+      "timestamp": "2025-08-10T17:02:01.732176"
+    },
+    {
+      "website": "WordPress",
+      "url": "https://wordpress.com/start/user",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:02:06.092966"
+    },
+    {
+      "website": "Wix",
+      "url": "https://www.wix.com/signup",
+      "status": "Fehler",
+      "message": "HTTP 404: Not Found",
+      "timestamp": "2025-08-10T17:02:06.097529"
+    },
+    {
+      "website": "Squarespace",
+      "url": "https://www.squarespace.com/signup",
+      "status": "Verfügbar",
+      "message": "Signup-Seite enthält E-Mail-Feld",
+      "timestamp": "2025-08-10T17:02:07.666783"
+    },
+    {
+      "website": "Pornhub",
+      "url": "https://www.pornhub.com/signup",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:02:12.725077"
+    },
+    {
+      "website": "OnlyFans",
+      "url": "https://onlyfans.com/signup",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:02:15.018406"
+    },
+    {
+      "website": "XVideos",
+      "url": "https://www.xvideos.com/signup",
+      "status": "Fehler",
+      "message": "HTTP 404: Not Found",
+      "timestamp": "2025-08-10T17:02:15.021917"
+    },
+    {
+      "website": "RedTube",
+      "url": "https://www.redtube.com/signup",
+      "status": "Fehler",
+      "message": "HTTP 404: Not Found",
+      "timestamp": "2025-08-10T17:02:15.636551"
+    },
+    {
+      "website": "YouPorn",
+      "url": "https://www.youporn.com/signup",
+      "status": "Fehler",
+      "message": "HTTP 404: Not Found",
+      "timestamp": "2025-08-10T17:02:16.322028"
+    },
+    {
+      "website": "LiveJasmin",
+      "url": "https://www.livejasmin.com/signup",
+      "status": "Fehler",
+      "message": "HTTP 404: Not Found",
+      "timestamp": "2025-08-10T17:02:16.873753"
+    },
+    {
+      "website": "StripChat",
+      "url": "https://stripchat.com/signup",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:02:22.212652"
+    },
+    {
+      "website": "Chaturbate",
+      "url": "https://chaturbate.com/signup",
+      "status": "Unbekannt",
+      "message": "Keine E-Mail-Registrierung gefunden",
+      "timestamp": "2025-08-10T17:02:26.536225"
+    },
+    {
+      "website": "MyFreeCams",
+      "url": "https://www.myfreecams.com/signup",
+      "status": "Fehler",
+      "message": "HTTP 404: Not Found",
+      "timestamp": "2025-08-10T17:02:26.541503"
+    }
+  ]
+}

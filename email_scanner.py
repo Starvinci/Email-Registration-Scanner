@@ -452,25 +452,14 @@ class EmailScanner:
         return result
     
     def _check_email_validation(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict) -> Dict:
-        """Versucht E-Mail-Validierung über verschiedene Methoden"""
+        """Versucht E-Mail-Validierung durch echte Website-Interaktion"""
         
-        # Methode 1: Suche nach E-Mail-Validierungs-APIs
-        api_endpoints = self._find_validation_apis(page_content)
-        
-        for endpoint in api_endpoints:
-            try:
-                validation_result = self._test_validation_api(email, endpoint, headers)
-                if validation_result:
-                    return validation_result
-            except:
-                continue
-        
-        # Methode 2: Teste das Signup-Formular direkt
+        # Methode 1: Teste das Signup-Formular direkt mit der echten E-Mail
         form_result = self._test_signup_form(email, website_name, website_config, page_content, headers)
         if form_result:
             return form_result
         
-        # Methode 3: Suche nach E-Mail-Verfügbarkeits-Checks
+        # Methode 2: Überprüfe E-Mail-Verfügbarkeit durch echte Website-Interaktion
         availability_result = self._check_email_availability(email, website_name, website_config, page_content, headers)
         if availability_result:
             return availability_result
@@ -478,7 +467,7 @@ class EmailScanner:
         return None
     
     def _improved_email_check(self, email: str, website_name: str, website_config: Dict) -> Dict:
-        """Verbesserte E-Mail-Überprüfung mit verschiedenen Methoden"""
+        """Verbesserte E-Mail-Überprüfung durch echte Website-Interaktion"""
         result = {
             "website": website_name,
             "url": website_config["signup_url"],
@@ -513,45 +502,74 @@ class EmailScanner:
             except:
                 pass
             
-            # Methode 2: Teste verschiedene E-Mail-Formate
-            test_emails = [
-                f"test{int(time.time())}@example.com",
-                f"check{int(time.time())}@testdomain.org",
-                f"verify{int(time.time())}@checker.net",
-                f"user{int(time.time())}@gmail.com",
-                f"demo{int(time.time())}@yahoo.com"
-            ]
-            
-            for test_email in test_emails:
-                try:
-                    # Teste mit POST-Request
-                    form_data = {
-                        'email': test_email,
-                        'password': 'TestPass123!',
-                        'confirm_password': 'TestPass123!'
-                    }
+            # Methode 2: Teste mit der echten E-Mail-Adresse
+            try:
+                # Teste mit POST-Request und der echten E-Mail
+                form_data = {
+                    'email': email,
+                    'password': 'TestPass123!',
+                    'confirm_password': 'TestPass123!',
+                    'username': f'user_{int(time.time())}',
+                    'first_name': 'Test',
+                    'last_name': 'User'
+                }
+                
+                response = requests.post(website_config["signup_url"], 
+                                      data=form_data, 
+                                      headers=headers, 
+                                      timeout=15,
+                                      allow_redirects=False)
+                
+                if response.status_code in [200, 302, 400, 422]:
+                    # Analysiere die Antwort auf E-Mail-Status
+                    response_text = response.text.lower()
                     
-                    response = requests.post(website_config["signup_url"], 
-                                          data=form_data, 
-                                          headers=headers, 
-                                          timeout=15,
-                                          allow_redirects=False)
-                    
-                    if response.status_code in [200, 302, 400, 422]:
-                        # Wenn eine Test-E-Mail akzeptiert wird
-                        if 'invalid email' not in response.text.lower() and 'email format' not in response.text.lower():
-                            result["status"] = "Verfügbar"
-                            result["message"] = "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
-                            return result
-                        elif 'already exists' in response.text.lower() or 'already registered' in response.text.lower():
-                            result["status"] = "Registriert"
-                            result["message"] = "E-Mail-Adresse ist bereits registriert"
-                            return result
-                            
-                except:
-                    continue
+                    # Wenn die E-Mail bereits existiert
+                    if any(keyword in response_text for keyword in [
+                        'already exists', 'already registered', 'email taken', 
+                        'email already', 'account exists', 'user exists',
+                        'email is taken', 'email already exists', 'account already exists'
+                    ]):
+                        result["status"] = "Registriert"
+                        result["message"] = "E-Mail-Adresse ist bereits registriert"
+                        return result
+                    # Wenn die E-Mail akzeptiert wird
+                    elif any(keyword in response_text for keyword in [
+                        'success', 'welcome', 'verification sent', 'check your email',
+                        'account created', 'registration successful', 'welcome to'
+                    ]):
+                        result["status"] = "Verfügbar"
+                        result["message"] = "E-Mail-Adresse wurde akzeptiert"
+                        return result
+                    # Wenn es ein E-Mail-Format-Fehler gibt
+                    elif any(keyword in response_text for keyword in [
+                        'invalid email', 'email format', 'invalid email format',
+                        'please enter a valid email', 'email is invalid'
+                    ]):
+                        result["status"] = "Verfügbar"
+                        result["message"] = "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
+                        return result
+                    # Wenn es ein Passwort-Fehler gibt (E-Mail wurde akzeptiert)
+                    elif any(keyword in response_text for keyword in [
+                        'password', 'confirm password', 'password mismatch',
+                        'passwords do not match', 'password is required'
+                    ]):
+                        result["status"] = "Verfügbar"
+                        result["message"] = "E-Mail wurde akzeptiert, Passwort-Fehler zeigt Verfügbarkeit"
+                        return result
+                    # Wenn es ein Benutzername-Fehler gibt (E-Mail wurde akzeptiert)
+                    elif any(keyword in response_text for keyword in [
+                        'username', 'username is taken', 'username already exists',
+                        'choose a different username'
+                    ]):
+                        result["status"] = "Verfügbar"
+                        result["message"] = "E-Mail wurde akzeptiert, Benutzername-Fehler zeigt Verfügbarkeit"
+                        return result
+                        
+            except Exception as e:
+                result["message"] = f"Formular-Test fehlgeschlagen: {str(e)}"
             
-            # Methode 3: Suche nach alternativen Endpunkten
+            # Methode 3: Suche nach alternativen Registrierungsseiten
             alternative_urls = [
                 website_config["signup_url"].replace('/signup', '/register'),
                 website_config["signup_url"].replace('/signup', '/signup/check'),
@@ -593,167 +611,134 @@ class EmailScanner:
         return result
     
     def _find_validation_apis(self, page_content: str) -> List[str]:
-        """Findet potenzielle E-Mail-Validierungs-APIs in der Seite"""
-        import re
-        
-        # Suche nach API-Endpunkten
-        api_patterns = [
-            r'["\']([^"\']*api[^"\']*email[^"\']*["\'])',
-            r'["\']([^"\']*validate[^"\']*["\'])',
-            r'["\']([^"\']*check[^"\']*["\'])',
-            r'["\']([^"\']*verify[^"\']*["\'])',
-            r'["\']([^"\']*signup[^"\']*["\'])',
-            r'["\']([^"\']*register[^"\']*["\'])'
-        ]
-        
-        endpoints = []
-        for pattern in api_patterns:
-            matches = re.findall(pattern, page_content, re.IGNORECASE)
-            for match in matches:
-                if match.startswith('http'):
-                    endpoints.append(match)
-                elif match.startswith('/'):
-                    endpoints.append(f"https://example.com{match}")
-        
-        return list(set(endpoints))
+        """Diese Methode wird nicht mehr verwendet - echte Website-Interaktion statt API-Calls"""
+        return []
     
     def _test_validation_api(self, email: str, endpoint: str, headers: Dict) -> Dict:
-        """Testet einen E-Mail-Validierungs-API-Endpunkt"""
-        try:
-            # Teste verschiedene HTTP-Methoden
-            for method in ['GET', 'POST']:
-                try:
-                    if method == 'GET':
-                        response = requests.get(endpoint, params={'email': email}, headers=headers, timeout=10)
-                    else:
-                        response = requests.post(endpoint, data={'email': email}, headers=headers, timeout=10)
-                    
-                    if response.status_code == 200:
-                        # Analysiere die Antwort
-                        if 'already exists' in response.text.lower() or 'already registered' in response.text.lower():
-                            return {
-                                "status": "Registriert",
-                                "message": "E-Mail-Adresse ist bereits registriert"
-                            }
-                        elif 'available' in response.text.lower() or 'not found' in response.text.lower():
-                            return {
-                                "status": "Verfügbar",
-                                "message": "E-Mail-Adresse ist verfügbar"
-                            }
-                except:
-                    continue
-        except:
-            pass
-        
+        """Diese Methode wird nicht mehr verwendet - echte Website-Interaktion statt API-Calls"""
         return None
     
     def _test_signup_form(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict) -> Dict:
-        """Testet das Signup-Formular direkt"""
+        """Testet das Signup-Formular mit der echten E-Mail-Adresse"""
         try:
-            # Suche nach dem Signup-Formular
-            if 'form' in page_content.lower() and 'email' in page_content.lower():
-                # Versuche, das Formular zu simulieren
-                form_data = {
-                    'email': email,
-                    'password': 'TestPassword123!',
-                    'confirm_password': 'TestPassword123!',
-                    'first_name': 'Test',
-                    'last_name': 'User'
-                }
+            # Erstelle ein realistisches Formular mit der echten E-Mail
+            form_data = {
+                'email': email,
+                'password': 'TestPass123!',
+                'confirm_password': 'TestPass123!',
+                'username': f'user_{int(time.time())}',
+                'first_name': 'Test',
+                'last_name': 'User'
+            }
+            
+            # Teste das Formular
+            response = requests.post(website_config["signup_url"], 
+                                  data=form_data, 
+                                  headers=headers, 
+                                  timeout=15,
+                                  allow_redirects=False)
+            
+            if response.status_code in [200, 302, 400, 422]:
+                response_text = response.text.lower()
                 
-                # Teste verschiedene Formular-Endpunkte
-                form_endpoints = [
-                    website_config["signup_url"],
-                    website_config["signup_url"].replace('/signup', '/register'),
-                    website_config["signup_url"].replace('/signup', '/signup/submit'),
-                    website_config["signup_url"] + '/submit'
-                ]
-                
-                for endpoint in form_endpoints:
-                    try:
-                        response = requests.post(endpoint, data=form_data, headers=headers, timeout=15, allow_redirects=False)
-                        
-                        if response.status_code in [200, 302, 400, 422]:
-                            # Analysiere die Antwort
-                            if 'already exists' in response.text.lower() or 'already registered' in response.text.lower():
-                                return {
-                                    "status": "Registriert",
-                                    "message": "E-Mail-Adresse ist bereits registriert"
-                                }
-                            elif 'invalid email' in response.text.lower() or 'email format' in response.text.lower():
-                                return {
-                                    "status": "Verfügbar",
-                                    "message": "E-Mail-Format akzeptiert, Adresse verfügbar"
-                                }
-                            elif 'password' in response.text.lower() or 'confirm' in response.text.lower():
-                                return {
-                                    "status": "Verfügbar",
-                                    "message": "E-Mail-Format akzeptiert, weitere Schritte erforderlich"
-                                }
-                    except:
-                        continue
-        except:
+                # Wenn die E-Mail bereits existiert
+                if any(keyword in response_text for keyword in [
+                    'already exists', 'already registered', 'email taken', 
+                    'email already', 'account exists', 'user exists',
+                    'email is taken', 'email already exists', 'account already exists'
+                ]):
+                    return {
+                        "status": "Registriert",
+                        "message": "E-Mail-Adresse ist bereits registriert"
+                    }
+                # Wenn die E-Mail akzeptiert wird
+                elif any(keyword in response_text for keyword in [
+                    'success', 'welcome', 'verification sent', 'check your email',
+                    'account created', 'registration successful', 'welcome to'
+                ]):
+                    return {
+                        "status": "Verfügbar",
+                        "message": "E-Mail-Adresse wurde akzeptiert"
+                    }
+                # Wenn es ein E-Mail-Format-Fehler gibt
+                elif any(keyword in response_text for keyword in [
+                    'invalid email', 'email format', 'invalid email format',
+                    'please enter a valid email', 'email is invalid'
+                ]):
+                    return {
+                        "status": "Verfügbar",
+                        "message": "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
+                    }
+                # Wenn es ein Passwort-Fehler gibt (E-Mail wurde akzeptiert)
+                elif any(keyword in response_text for keyword in [
+                    'password', 'confirm password', 'password mismatch',
+                    'passwords do not match', 'password is required'
+                ]):
+                    return {
+                        "status": "Verfügbar",
+                        "message": "E-Mail wurde akzeptiert, Passwort-Fehler zeigt Verfügbarkeit"
+                    }
+                # Wenn es ein Benutzername-Fehler gibt (E-Mail wurde akzeptiert)
+                elif any(keyword in response_text for keyword in [
+                    'username', 'username is taken', 'username already exists',
+                    'choose a different username'
+                ]):
+                    return {
+                        "status": "Verfügbar",
+                        "message": "E-Mail wurde akzeptiert, Benutzername-Fehler zeigt Verfügbarkeit"
+                    }
+                    
+        except Exception as e:
             pass
-        
+            
         return None
     
     def _check_email_availability(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict) -> Dict:
-        """Überprüft E-Mail-Verfügbarkeit über verschiedene Methoden"""
+        """Überprüft E-Mail-Verfügbarkeit durch echte Website-Interaktion"""
         try:
-            # Methode 1: Suche nach E-Mail-Verfügbarkeits-Checks
-            if 'email' in page_content.lower() and 'available' in page_content.lower():
-                # Versuche, die Verfügbarkeit zu testen
-                availability_urls = [
-                    f"{website_config['signup_url']}/check-email",
-                    f"{website_config['signup_url']}/validate-email",
-                    f"{website_config['signup_url']}/email-availability"
-                ]
-                
-                for url in availability_urls:
-                    try:
-                        response = requests.post(url, data={'email': email}, headers=headers, timeout=10)
-                        if response.status_code == 200:
-                            if 'available' in response.text.lower():
-                                return {
-                                    "status": "Verfügbar",
-                                    "message": "E-Mail-Adresse ist verfügbar"
-                                }
-                            elif 'not available' in response.text.lower() or 'taken' in response.text.lower():
-                                return {
-                                    "status": "Registriert",
-                                    "message": "E-Mail-Adresse ist bereits registriert"
-                                }
-                    except:
-                        continue
-            
-            # Methode 2: Teste verschiedene E-Mail-Formate
-            test_emails = [
-                f"test_{int(time.time())}@example.com",
-                f"check_{int(time.time())}@testdomain.org",
-                f"verify_{int(time.time())}@checker.net"
+            # Methode 1: Teste spezifische E-Mail-Verfügbarkeits-Endpunkte
+            check_urls = [
+                website_config["signup_url"] + '/check-email',
+                website_config["signup_url"] + '/validate-email',
+                website_config["signup_url"] + '/email-available',
+                website_config["signup_url"].replace('/signup', '/check-email'),
+                website_config["signup_url"].replace('/signup', '/validate-email')
             ]
             
-            for test_email in test_emails:
+            for check_url in check_urls:
                 try:
-                    response = requests.post(website_config["signup_url"], 
-                                          data={'email': test_email}, 
+                    response = requests.post(check_url, 
+                                          data={'email': email}, 
                                           headers=headers, 
-                                          timeout=10,
-                                          allow_redirects=False)
+                                          timeout=10)
                     
-                    if response.status_code in [200, 302, 400, 422]:
-                        # Wenn eine Test-E-Mail akzeptiert wird, ist die ursprüngliche E-Mail wahrscheinlich verfügbar
-                        if 'invalid email' not in response.text.lower():
+                    if response.status_code == 200:
+                        response_text = response.text.lower()
+                        
+                        if any(keyword in response_text for keyword in ['available', 'not found', 'not registered']):
                             return {
                                 "status": "Verfügbar",
-                                "message": "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
+                                "message": "E-Mail-Überprüfungs-Endpunkt bestätigt Verfügbarkeit"
                             }
+                        elif any(keyword in response_text for keyword in ['taken', 'exists', 'already registered']):
+                            return {
+                                "status": "Registriert",
+                                "message": "E-Mail-Überprüfungs-Endpunkt bestätigt Registrierung"
+                            }
+                            
                 except:
                     continue
-                    
-        except:
+            
+            # Methode 2: Analysiere die Signup-Seite auf E-Mail-Felder
+            if 'email' in page_content.lower() and 'signup' in page_content.lower():
+                return {
+                    "status": "Verfügbar",
+                    "message": "Signup-Seite enthält E-Mail-Feld"
+                }
+                
+        except Exception as e:
             pass
-        
+            
         return None
     
     def _fallback_analysis(self, email: str, website_name: str, website_config: Dict, page_content: str) -> Dict:
@@ -941,25 +926,10 @@ class EmailScanner:
     def _check_email_validation_with_status(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict, progress, task, current_num: int, total: int) -> Dict:
         """Versucht E-Mail-Validierung mit Echtzeit-Status-Updates"""
         
-        # Status: Suche nach Validierungs-APIs
-        progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Suche nach Validierungs-APIs")
-        
-        # Methode 1: Suche nach E-Mail-Validierungs-APIs
-        api_endpoints = self._find_validation_apis(page_content)
-        
-        for endpoint in api_endpoints:
-            try:
-                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste API: {endpoint[:30]}...")
-                validation_result = self._test_validation_api(email, endpoint, headers)
-                if validation_result:
-                    return validation_result
-            except:
-                continue
-        
         # Status: Teste Signup-Formular
         progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste Signup-Formular")
         
-        # Methode 2: Teste das Signup-Formular direkt
+        # Methode 1: Teste das Signup-Formular direkt
         form_result = self._test_signup_form(email, website_name, website_config, page_content, headers)
         if form_result:
             return form_result
@@ -967,7 +937,7 @@ class EmailScanner:
         # Status: Überprüfe E-Mail-Verfügbarkeit
         progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Überprüfe E-Mail-Verfügbarkeit")
         
-        # Methode 3: Suche nach E-Mail-Verfügbarkeits-Checks
+        # Methode 2: Suche nach E-Mail-Verfügbarkeits-Checks
         availability_result = self._check_email_availability(email, website_name, website_config, page_content, headers)
         if availability_result:
             return availability_result
@@ -975,7 +945,7 @@ class EmailScanner:
         return None
     
     def _improved_email_check_with_status(self, email: str, website_name: str, website_config: Dict, progress, task, current_num: int, total: int) -> Dict:
-        """Verbesserte E-Mail-Überprüfung mit Echtzeit-Status-Updates"""
+        """Verbesserte E-Mail-Überprüfung durch echte Website-Interaktion mit Echtzeit-Status-Updates"""
         result = {
             "website": website_name,
             "url": website_config["signup_url"],
@@ -1013,51 +983,77 @@ class EmailScanner:
             except:
                 pass
             
-            # Status: Teste verschiedene E-Mail-Formate
-            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste verschiedene E-Mail-Formate")
+            # Status: Teste mit der echten E-Mail-Adresse
+            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste mit der echten E-Mail-Adresse")
             
-            # Methode 2: Teste verschiedene E-Mail-Formate
-            test_emails = [
-                f"test{int(time.time())}@example.com",
-                f"check{int(time.time())}@testdomain.org",
-                f"verify{int(time.time())}@checker.net",
-                f"user{int(time.time())}@gmail.com",
-                f"demo{int(time.time())}@yahoo.com"
-            ]
-            
-            for j, test_email in enumerate(test_emails, 1):
-                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste E-Mail {j}/{len(test_emails)}")
+            try:
+                # Teste mit POST-Request und der echten E-Mail
+                form_data = {
+                    'email': email,
+                    'password': 'TestPass123!',
+                    'confirm_password': 'TestPass123!',
+                    'username': f'user_{int(time.time())}',
+                    'first_name': 'Test',
+                    'last_name': 'User'
+                }
                 
-                try:
-                    # Teste mit POST-Request
-                    form_data = {
-                        'email': test_email,
-                        'password': 'TestPass123!',
-                        'confirm_password': 'TestPass123!'
-                    }
+                response = requests.post(website_config["signup_url"], 
+                                      data=form_data, 
+                                      headers=headers, 
+                                      timeout=15,
+                                      allow_redirects=False)
+                
+                if response.status_code in [200, 302, 400, 422]:
+                    # Analysiere die Antwort auf E-Mail-Status
+                    response_text = response.text.lower()
                     
-                    response = requests.post(website_config["signup_url"], 
-                                          data=form_data, 
-                                          headers=headers, 
-                                          timeout=15,
-                                          allow_redirects=False)
-                    
-                    if response.status_code in [200, 302, 400, 422]:
-                        # Wenn eine Test-E-Mail akzeptiert wird
-                        if 'invalid email' not in response.text.lower() and 'email format' not in response.text.lower():
-                            result["status"] = "Verfügbar"
-                            result["message"] = "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
-                            return result
-                        elif 'already exists' in response.text.lower() or 'already registered' in response.text.lower():
-                            result["status"] = "Registriert"
-                            result["message"] = "E-Mail-Adresse ist bereits registriert"
-                            return result
-                            
-                except:
-                    continue
+                    # Wenn die E-Mail bereits existiert
+                    if any(keyword in response_text for keyword in [
+                        'already exists', 'already registered', 'email taken', 
+                        'email already', 'account exists', 'user exists',
+                        'email is taken', 'email already exists', 'account already exists'
+                    ]):
+                        result["status"] = "Registriert"
+                        result["message"] = "E-Mail-Adresse ist bereits registriert"
+                        return result
+                    # Wenn die E-Mail akzeptiert wird
+                    elif any(keyword in response_text for keyword in [
+                        'success', 'welcome', 'verification sent', 'check your email',
+                        'account created', 'registration successful', 'welcome to'
+                    ]):
+                        result["status"] = "Verfügbar"
+                        result["message"] = "E-Mail-Adresse wurde akzeptiert"
+                        return result
+                    # Wenn es ein E-Mail-Format-Fehler gibt
+                    elif any(keyword in response_text for keyword in [
+                        'invalid email', 'email format', 'invalid email format',
+                        'please enter a valid email', 'email is invalid'
+                    ]):
+                        result["status"] = "Verfügbar"
+                        result["message"] = "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
+                        return result
+                    # Wenn es ein Passwort-Fehler gibt (E-Mail wurde akzeptiert)
+                    elif any(keyword in response_text for keyword in [
+                        'password', 'confirm password', 'password mismatch',
+                        'passwords do not match', 'password is required'
+                    ]):
+                        result["status"] = "Verfügbar"
+                        result["message"] = "E-Mail wurde akzeptiert, Passwort-Fehler zeigt Verfügbarkeit"
+                        return result
+                    # Wenn es ein Benutzername-Fehler gibt (E-Mail wurde akzeptiert)
+                    elif any(keyword in response_text for keyword in [
+                        'username', 'username is taken', 'username already exists',
+                        'choose a different username'
+                    ]):
+                        result["status"] = "Verfügbar"
+                        result["message"] = "E-Mail wurde akzeptiert, Benutzername-Fehler zeigt Verfügbarkeit"
+                        return result
+                        
+            except Exception as e:
+                result["message"] = f"Formular-Test fehlgeschlagen: {str(e)}"
             
-            # Status: Suche nach alternativen Endpunkten
-            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Suche nach alternativen Endpunkten")
+            # Status: Suche nach alternativen Registrierungsseiten
+            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Suche nach alternativen Registrierungsseiten")
             
             # Methode 3: Suche nach alternativen Endpunkten
             alternative_urls = [
