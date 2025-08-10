@@ -8,10 +8,7 @@ import requests
 import json
 import time
 import os
-import subprocess
 import sys
-import threading
-import queue
 from datetime import datetime
 from typing import Dict, List, Tuple, Optional
 import argparse
@@ -23,776 +20,86 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 import re
 import art
 
-class OSINTToolManager:
-    """Manager für OSINT-Tools mit Subthreads für bessere Performance"""
-    
-    def __init__(self, console: Console):
-        self.console = console
-        self.tools_available = {}
-        self.tool_processes = {}
-        self.input_queues = {}
-        self.output_queues = {}
-        self.tool_threads = {}
-        self.running = False
-        
-        # Starte Tools in Subthreads beim Initialisieren
-        self._start_tools_in_background()
-    
-    def _start_tools_in_background(self):
-        """Startet alle verfügbaren OSINT-Tools in Subthreads"""
-        self.console.print("[cyan]🔄 Starte OSINT-Tools im Hintergrund...[/cyan]")
-        
-        # Prüfe Tools und starte sie in Threads
-        tools_to_check = {
-            "maigret": self._start_maigret_background,
-            "sherlock": self._start_sherlock_background,
-            "holehe": self._start_holehe_background
-        }
-        
-        for tool_name, start_func in tools_to_check.items():
-            try:
-                if start_func():
-                    self.tools_available[tool_name] = True
-                    self.console.print(f"[green] {tool_name.capitalize()} gestartet[/green]")
-                else:
-                    self.tools_available[tool_name] = False
-            except Exception as e:
-                self.console.print(f"[red] Fehler beim Starten von {tool_name}: {e}[/red]")
-                self.tools_available[tool_name] = False
-        
-        self.running = True
-        self.console.print(f"[green]🚀 {sum(self.tools_available.values())} OSINT-Tools erfolgreich gestartet[/green]")
-    
-    def _start_maigret_background(self) -> bool:
-        """Startet Maigret im Hintergrund-Thread"""
-        try:
-            # Prüfe verschiedene mögliche Pfade
-            maigret_paths = [
-                os.path.join(os.getcwd(), "maigret", "maigret", "__main__.py"),
-                os.path.join(os.getcwd(), "maigret", "pyinstaller", "maigret_standalone.py"),
-                os.path.join(os.getcwd(), "maigret", "__main__.py")
-            ]
-            
-            maigret_path = None
-            for path in maigret_paths:
-                if os.path.exists(path):
-                    maigret_path = path
-                    break
-            
-            if not maigret_path:
-                return False
-            
-            # Erstelle Queues für Kommunikation
-            input_queue = queue.Queue()
-            output_queue = queue.Queue()
-            
-            # Starte Thread für Maigret
-            thread = threading.Thread(
-                target=self._maigret_worker,
-                args=(maigret_path, input_queue, output_queue),
-                daemon=True
-            )
-            thread.start()
-            
-            # Speichere Referenzen
-            self.tool_processes["maigret"] = thread
-            self.input_queues["maigret"] = input_queue
-            self.output_queues["maigret"] = output_queue
-            self.tool_threads["maigret"] = thread
-            
-            return True
-        except Exception as e:
-            self.console.print(f"[red]Fehler beim Starten von Maigret: {e}[/red]")
-            return False
-    
-    def _start_sherlock_background(self) -> bool:
-        """Startet Sherlock im Hintergrund-Thread"""
-        try:
-            # Prüfe verschiedene mögliche Pfade
-            sherlock_paths = [
-                os.path.join(os.getcwd(), "sherlock", "sherlock_project", "__main__.py"),
-                os.path.join(os.getcwd(), "sherlock", "__main__.py"),
-                os.path.join(os.getcwd(), "sherlock", "sherlock_project", "sherlock.py")
-            ]
-            
-            sherlock_path = None
-            for path in sherlock_paths:
-                if os.path.exists(path):
-                    sherlock_path = path
-                    break
-            
-            if not sherlock_path:
-                return False
-            
-            # Erstelle Queues für Kommunikation
-            input_queue = queue.Queue()
-            output_queue = queue.Queue()
-            
-            # Starte Thread für Sherlock
-            thread = threading.Thread(
-                target=self._sherlock_worker,
-                args=(sherlock_path, input_queue, output_queue),
-                daemon=True
-            )
-            thread.start()
-            
-            # Speichere Referenzen
-            self.tool_processes["sherlock"] = thread
-            self.input_queues["sherlock"] = input_queue
-            self.output_queues["sherlock"] = output_queue
-            self.tool_threads["sherlock"] = thread
-            
-            return True
-        except Exception as e:
-            self.console.print(f"[red]Fehler beim Starten von Sherlock: {e}[/red]")
-            return False
-    
-    def _start_holehe_background(self) -> bool:
-        """Startet Holehe im Hintergrund-Thread (falls verfügbar)"""
-        try:
-            # Prüfe ob Holehe verfügbar ist
-            result = subprocess.run(["holehe", "--help"], 
-                                  capture_output=True, 
-                                  text=True, 
-                                  timeout=5)
-            if result.returncode != 0:
-                return False
-            
-            # Erstelle Queues für Kommunikation
-            input_queue = queue.Queue()
-            output_queue = queue.Queue()
-            
-            # Starte Thread für Holehe
-            thread = threading.Thread(
-                target=self._holehe_worker,
-                args=(input_queue, output_queue),
-                daemon=True
-            )
-            thread.start()
-            
-            # Speichere Referenzen
-            self.tool_processes["holehe"] = thread
-            self.input_queues["holehe"] = input_queue
-            self.output_queues["holehe"] = output_queue
-            self.tool_threads["holehe"] = thread
-            
-            return True
-        except Exception:
-            return False
-    
-    def _maigret_worker(self, maigret_path: str, input_queue: queue.Queue, output_queue: queue.Queue):
-        """Worker-Thread für Maigret"""
-        while self.running:
-            try:
-                # Warte auf Eingabe
-                try:
-                    data = input_queue.get(timeout=1)
-                    if data is None:  # Stop-Signal
-                        break
-                    
-                    query, scan_id = data
-                    
-                    # Führe Maigret-Scan durch
-                    cmd = [sys.executable, maigret_path, query, "--timeout", "10", "--print-found"]
-                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
-                    
-                    # Sende Ergebnis zurück
-                    output_queue.put({
-                        "scan_id": scan_id,
-                        "tool": "maigret",
-                        "query": query,
-                        "success": result.returncode == 0,
-                        "output": result.stdout,
-                        "error": result.stderr,
-                        "return_code": result.returncode
-                    })
-                    
-                except queue.Empty:
-                    continue
-                    
-            except Exception as e:
-                output_queue.put({
-                    "scan_id": "error",
-                    "tool": "maigret",
-                    "error": str(e)
-                })
-    
-    def _sherlock_worker(self, sherlock_path: str, input_queue: queue.Queue, output_queue: queue.Queue):
-        """Worker-Thread für Sherlock"""
-        while self.running:
-            try:
-                # Warte auf Eingabe
-                try:
-                    data = input_queue.get(timeout=1)
-                    if data is None:  # Stop-Signal
-                        break
-                    
-                    username, scan_id = data
-                    
-                    # Führe Sherlock-Scan durch
-                    cmd = [sys.executable, sherlock_path, username, "--timeout", "10"]
-                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-                    
-                    # Sende Ergebnis zurück
-                    output_queue.put({
-                        "scan_id": scan_id,
-                        "tool": "sherlock",
-                        "query": username,
-                        "success": result.returncode == 0,
-                        "output": result.stdout,
-                        "error": result.stderr,
-                        "return_code": result.returncode
-                    })
-                    
-                except queue.Empty:
-                    continue
-                    
-            except Exception as e:
-                output_queue.put({
-                    "scan_id": "error",
-                    "tool": "sherlock",
-                    "error": str(e)
-                })
-    
-    def _holehe_worker(self, input_queue: queue.Queue, output_queue: queue.Queue):
-        """Worker-Thread für Holehe"""
-        while self.running:
-            try:
-                # Warte auf Eingabe
-                try:
-                    data = input_queue.get(timeout=1)
-                    if data is None:  # Stop-Signal
-                        break
-                    
-                    email, scan_id = data
-                    
-                    # Führe Holehe-Scan durch
-                    cmd = ["holehe", email]
-                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-                    
-                    # Sende Ergebnis zurück
-                    output_queue.put({
-                        "scan_id": scan_id,
-                        "tool": "holehe",
-                        "query": email,
-                        "success": result.returncode == 0,
-                        "output": result.stdout,
-                        "error": result.stderr,
-                        "return_code": result.returncode
-                    })
-                    
-                except queue.Empty:
-                    continue
-                    
-            except Exception as e:
-                output_queue.put({
-                    "scan_id": "error",
-                    "tool": "holehe",
-                    "error": str(e)
-                })
-    
-    def submit_scan(self, tool: str, query: str) -> str:
-        """Übermittelt einen Scan an das entsprechende Tool"""
-        if tool not in self.tools_available or not self.tools_available[tool]:
-            return None
-        
-        if tool not in self.input_queues:
-            return None
-        
-        # Generiere eindeutige Scan-ID
-        scan_id = f"{tool}_{int(time.time())}_{threading.get_ident()}"
-        
-        # Sende Scan an Tool
-        self.input_queues[tool].put((query, scan_id))
-        
-        return scan_id
-    
-    def get_scan_result(self, tool: str, timeout: float = 5.0) -> Optional[Dict]:
-        """Holt das Ergebnis eines Scans vom Tool"""
-        if tool not in self.output_queues:
-            return None
-        
-        try:
-            result = self.output_queues[tool].get(timeout=timeout)
-            return result
-        except queue.Empty:
-            return None
-    
-    def show_tools_status(self):
-        """Zeigt den Status der verfügbaren OSINT-Tools an"""
-        self.console.print("\n[bold cyan]OSINT-Tools Status:[/bold cyan]")
-        self.console.print("-" * 40)
-        
-        for tool, available in self.tools_available.items():
-            status = "[green]✓ Verfügbar[/green]" if available else "[red]✗ Nicht verfügbar[/red]"
-            self.console.print(f"  {tool.capitalize():<10}: {status}")
-            
-        if not any(self.tools_available.values()):
-            self.console.print("\n[yellow]Keine OSINT-Tools verfügbar. Installiere sie mit:[/yellow]")
-            self.console.print("  chmod +x install_osint_tools.sh")
-            self.console.print("  ./install_osint_tools.sh")
-            self.console.print("")
-            self.console.print("Oder manuell:")
-            self.console.print("  sudo apt install holehe")
-            self.console.print("  git clone https://github.com/soxoj/maigret && cd maigret && pip install -r requirements.txt")
-            self.console.print("  git clone https://github.com/sherlock-project/sherlock.git && cd sherlock && pip install -r requirements.txt")
-        else:
-            # Zeige verfügbare Tools an
-            available_tools = [tool for tool, available in self.tools_available.items() if available]
-            self.console.print(f"\n[green]Verfügbare Tools: {', '.join(available_tools)}[/green]")
-            self.console.print("[cyan]Tools laufen im Hintergrund und sind bereit für Scans[/cyan]")
-    
-    def stop_all_tools(self):
-        """Stoppt alle OSINT-Tools"""
-        self.running = False
-        
-        # Sende Stop-Signale an alle Tools
-        for tool_name, input_queue in self.input_queues.items():
-            try:
-                input_queue.put(None)
-            except:
-                pass
-        
-        # Warte auf Beendigung der Threads
-        for tool_name, thread in self.tool_threads.items():
-            try:
-                thread.join(timeout=2)
-            except:
-                pass
-        
-        self.console.print("[yellow]🛑 Alle OSINT-Tools gestoppt[/yellow]")
-    
-    def run_osint_scan_with_manager(self, email: str) -> List[Dict]:
-        """Führt OSINT-Scans mit allen verfügbaren Tools durch"""
-        results = []
-        
-        if not any(self.tools_available.values()):
-            self.console.print("[yellow]Keine OSINT-Tools verfügbar[/yellow]")
-            return results
-        
-        self.console.print(f"[cyan]Starte OSINT-Scans für: {email}[/cyan]")
-        
-        # Führe Scans mit allen verfügbaren Tools durch
-        for tool, available in self.tools_available.items():
-            if not available:
-                continue
-                
-            self.console.print(f"[blue]🔍 Starte {tool.capitalize()}-Scan...[/blue]")
-            
-            try:
-                # Sende Scan-Anfrage an das Tool
-                scan_id = self.submit_scan(tool, email)
-                if scan_id:
-                    # Warte auf Ergebnis
-                    result = self.get_scan_result(tool, timeout=30.0)
-                    if result:
-                        results.append({
-                            'tool': tool,
-                            'email': email,
-                            'result': result,
-                            'timestamp': datetime.now().isoformat()
-                        })
-                        self.console.print(f"[green] {tool.capitalize()}-Scan abgeschlossen[/green]")
-                    else:
-                        self.console.print(f"[yellow] {tool.capitalize()}-Scan: Kein Ergebnis erhalten[/yellow]")
-                else:
-                    self.console.print(f"[red] {tool.capitalize()}-Scan: Konnte nicht gestartet werden[/red]")
-                    
-            except Exception as e:
-                self.console.print(f"[red] Fehler bei {tool.capitalize()}-Scan: {e}[/red]")
-        
-        if results:
-            self.console.print(f"[green] OSINT-Scans abgeschlossen: {len(results)} Ergebnisse[/green]")
-        else:
-            self.console.print("[yellow] Keine OSINT-Scan-Ergebnisse erhalten[/yellow]")
-        
-        return results
+# Direkte Imports der OSINT-Tools als Python-Pakete
+try:
+    import holehe
+    HOLEHE_AVAILABLE = True
+except ImportError:
+    HOLEHE_AVAILABLE = False
 
-class OSINTFallbackScanner:
-    """Fallback-Scanner für OSINT-Tools (Holehe, Maigret, etc.) - Legacy-Klasse"""
+try:
+    import maigret
+    import maigret.sites
+    import maigret.checking
+    import logging
+    MAIGRET_AVAILABLE = True
+except ImportError:
+    MAIGRET_AVAILABLE = False
+
+class OSINTScanner:
+    """Direkter Scanner für Holehe als Python-Paket"""
     
     def __init__(self, console: Console):
         self.console = console
-        self.tools_available = self._check_tools_availability()
+        self.holehe_available = HOLEHE_AVAILABLE
         
-    def _check_tools_availability(self) -> Dict[str, bool]:
-        """Überprüft, welche OSINT-Tools verfügbar sind"""
-        tools = {
-            "holehe": False,
-            "maigret": False,
-            "sherlock": False
-        }
-        
-        # Überprüfe Holehe
-        try:
-            result = subprocess.run(["holehe", "--help"], 
-                                  capture_output=True, 
-                                  text=True, 
-                                  timeout=5)
-            if result.returncode == 0:
-                tools["holehe"] = True
-        except (subprocess.TimeoutExpired, FileNotFoundError, subprocess.SubprocessError):
-            pass
-            
-        # Überprüfe Maigret (lokale Installation)
-        try:
-            # Versuche zuerst den lokalen Pfad
-            maigret_path = os.path.join(os.getcwd(), "maigret", "maigret", "__main__.py")
-            if os.path.exists(maigret_path):
-                result = subprocess.run([sys.executable, maigret_path, "--help"], 
-                                      capture_output=True, 
-                                      text=True, 
-                                      timeout=5)
-                if result.returncode == 0:
-                    tools["maigret"] = True
-            else:
-                # Fallback: Versuche global installiertes Maigret
-                result = subprocess.run(["maigret", "--help"], 
-                                      capture_output=True, 
-                                      text=True, 
-                                      timeout=5)
-                if result.returncode == 0:
-                    tools["maigret"] = True
-        except (subprocess.TimeoutExpired, FileNotFoundError, subprocess.SubprocessError):
-            pass
-            
-        # Überprüfe Sherlock (lokale Installation)
-        try:
-            # Versuche zuerst den lokalen Pfad
-            sherlock_path = os.path.join(os.getcwd(), "sherlock", "sherlock_project", "__main__.py")
-            if os.path.exists(sherlock_path):
-                result = subprocess.run([sys.executable, sherlock_path, "--help"], 
-                                      capture_output=True, 
-                                      text=True, 
-                                      timeout=5)
-                if result.returncode == 0:
-                    tools["sherlock"] = True
-            else:
-                # Fallback: Versuche global installiertes Sherlock
-                result = subprocess.run(["sherlock", "--help"], 
-                                      capture_output=True, 
-                                      text=True, 
-                                      timeout=5)
-                if result.returncode == 0:
-                    tools["sherlock"] = True
-        except (subprocess.TimeoutExpired, FileNotFoundError, subprocess.SubprocessError):
-            pass
-            
-        return tools
-    
-    def show_tools_status(self):
-        """Zeigt den Status der verfügbaren OSINT-Tools an"""
-        self.console.print("\n[bold cyan]OSINT-Tools Status:[/bold cyan]")
-        self.console.print("-" * 40)
-        
-        # Verwende den neuen Manager für den Status
-        for tool, available in self.osint_manager.tools_available.items():
-            status = "[green]✓ Verfügbar[/green]" if available else "[red]✗ Nicht verfügbar[/red]"
-            self.console.print(f"  {tool.capitalize():<10}: {status}")
-            
-        if not any(self.osint_manager.tools_available.values()):
-            self.console.print("\n[yellow]Keine OSINT-Tools verfügbar. Installiere sie mit:[/yellow]")
-            self.console.print("  chmod +x install_osint_tools.sh")
-            self.console.print("  ./install_osint_tools.sh")
-            self.console.print("")
-            self.console.print("Oder manuell:")
-            self.console.print("  sudo apt install holehe")
-            self.console.print("  git clone https://github.com/soxoj/maigret && cd maigret && pip install -r requirements.txt")
-            self.console.print("  git clone https://github.com/sherlock-project/sherlock.git && cd sherlock && pip install -r requirements.txt")
+        if self.holehe_available:
+            self.console.print("[cyan]🔍 Holehe ist verfügbar für E-Mail-Scans (120+ Websites)[/cyan]")
         else:
-            # Zeige verfügbare Tools an
-            available_tools = [tool for tool, available in self.tools_available.items() if available]
-            if available_tools:
-                self.console.print(f"\n[green]Verfügbare Tools: {', '.join(available_tools)}[/green]")
-                self.console.print("[green]Diese werden automatisch für OSINT-Scans verwendet.[/green]")
+            self.console.print("[yellow]⚠ Holehe nicht verfügbar. Installiere es mit: pip install holehe[/yellow]")
     
     def run_holehe_scan(self, email: str) -> Optional[Dict]:
-        """Führt einen Holehe-Scan durch"""
-        if not self.tools_available["holehe"]:
+        """Führt einen Holehe-Scan direkt als Python-Paket aus"""
+        if not self.holehe_available:
             return None
-            
+        
         try:
-            self.console.print(f"  [cyan]Holehe-Scan läuft...[/cyan]")
+            self.console.print(f"[cyan]🔍 Führe Holehe-Scan für {email} aus...[/cyan]")
             
-            result = subprocess.run(
-                ["holehe", email],
-                capture_output=True,
-                text=True,
-                timeout=120  # 2 Minuten Timeout
-            )
+            # Führe Holehe-Scan aus
+            results = holehe.core(email)
             
-            if result.returncode == 0:
-                return self._parse_holehe_output(result.stdout, email)
-            else:
-                return {
-                    "tool": "Holehe",
-                    "status": "Fehler",
-                    "message": f"Exit-Code: {result.returncode}",
-                    "raw_output": result.stderr
-                }
-                
-        except subprocess.TimeoutExpired:
+            # Ergebnisse parsen und formatieren
+            parsed_results = []
+            found_count = 0
+            
+            for site_name, result in results.items():
+                if result.get("exists"):
+                    found_count += 1
+                    parsed_results.append({
+                        "site": site_name,
+                        "exists": True,
+                        "email_recovery": result.get("emailrecovery", ""),
+                        "phone_number": result.get("phoneNumber", ""),
+                        "others": result.get("others", {})
+                    })
+            
             return {
-                "tool": "Holehe",
-                "status": "Timeout",
-                "message": "Scan überschritt Zeitlimit (2 Minuten)"
+                "tool": "holehe",
+                "email": email,
+                "results": parsed_results,
+                "total_found": found_count,
+                "total_checked": len(results)
             }
+            
         except Exception as e:
-            return {
-                "tool": "Holehe",
-                "status": "Fehler",
-                "message": f"Unerwarteter Fehler: {str(e)}"
-            }
-    
-    def run_maigret_scan(self, email: str) -> Optional[Dict]:
-        """Führt einen Maigret-Scan durch"""
-        if not self.tools_available["maigret"]:
+            self.console.print(f"[red]Fehler bei Holehe-Scan: {e}[/red]")
             return None
-            
-        try:
-            self.console.print(f"  [cyan]Maigret-Scan läuft...[/cyan]")
-            
-            # Verwende lokalen Pfad falls verfügbar
-            if os.path.exists(os.path.join(os.getcwd(), "maigret", "maigret", "__main__.py")):
-                maigret_path = os.path.join(os.getcwd(), "maigret", "maigret", "__main__.py")
-                cmd = [sys.executable, maigret_path, email, "--timeout", "10", "--print-found"]
-            else:
-                cmd = ["maigret", email, "--timeout", "10", "--print-found"]
-            
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=180  # 3 Minuten Timeout
-            )
-            
-            if result.returncode == 0:
-                return self._parse_maigret_output(result.stdout, email)
-            else:
-                return {
-                    "tool": "Maigret",
-                    "status": "Fehler",
-                    "message": f"Exit-Code: {result.returncode}",
-                    "raw_output": result.stderr
-                }
-                
-        except subprocess.TimeoutExpired:
-            return {
-                "tool": "Maigret",
-                "status": "Timeout",
-                "message": "Scan überschritt Zeitlimit (3 Minuten)"
-            }
-        except Exception as e:
-            return {
-                "tool": "Maigret",
-                "status": "Fehler",
-                "message": f"Unerwarteter Fehler: {str(e)}"
-            }
     
-    def run_sherlock_scan(self, email: str) -> Optional[Dict]:
-        """Führt einen Sherlock-Scan durch (primär für Usernames)"""
-        if not self.tools_available["sherlock"]:
-            return None
-            
-        try:
-            # Extrahiere Username aus E-Mail
-            username = email.split('@')[0]
-            self.console.print(f"  [cyan]Sherlock-Scan läuft für Username: {username}[/cyan]")
-            
-            # Verwende lokalen Pfad falls verfügbar
-            if os.path.exists(os.path.join(os.getcwd(), "sherlock", "sherlock_project", "__main__.py")):
-                sherlock_path = os.path.join(os.getcwd(), "sherlock", "sherlock_project", "__main__.py")
-                cmd = [sys.executable, sherlock_path, username, "--timeout", "10"]
-            else:
-                cmd = ["sherlock", username, "--timeout", "10"]
-            
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=120  # 2 Minuten Timeout
-            )
-            
-            if result.returncode == 0:
-                return self._parse_sherlock_output(result.stdout, username)
-            else:
-                return {
-                    "tool": "Sherlock",
-                    "status": "Fehler",
-                    "message": f"Exit-Code: {result.returncode}",
-                    "raw_output": result.stderr
-                }
-                
-        except subprocess.TimeoutExpired:
-            return {
-                "tool": "Sherlock",
-                "status": "Timeout",
-                "message": "Scan überschritt Zeitlimit (2 Minuten)"
-            }
-        except Exception as e:
-            return {
-                "tool": "Sherlock",
-                "status": "Fehler",
-                "message": f"Unerwarteter Fehler: {str(e)}"
-            }
-    
-    def _parse_holehe_output(self, output: str, email: str) -> Dict:
-        """Parst die Holehe-Ausgabe"""
-        lines = output.strip().split('\n')
-        found_services = []
-        
-        for line in lines:
-            if '[' in line and ']' in line:
-                # Holehe-Format: [✓] Service Name
-                if '[✓]' in line:
-                    service = line.split('[✓]')[1].strip()
-                    found_services.append(service)
-        
-        if found_services:
-            return {
-                "tool": "Holehe",
-                "status": "Erfolgreich",
-                "message": f"E-Mail bei {len(found_services)} Diensten gefunden",
-                "found_services": found_services,
-                "raw_output": output
-            }
-        else:
-            return {
-                "tool": "Holehe",
-                "status": "Keine Treffer",
-                "message": "E-Mail bei keinem der überprüften Dienste gefunden",
-                "found_services": [],
-                "raw_output": output
-            }
-    
-    def _parse_maigret_output(self, output: str, email: str) -> Dict:
-        """Parst die Maigret-Ausgabe"""
-        lines = output.strip().split('\n')
-        found_services = []
-        
-        for line in lines:
-            if 'FOUND' in line or 'found' in line:
-                # Maigret-Format: Service Name - FOUND
-                parts = line.split(' - ')
-                if len(parts) >= 2:
-                    service = parts[0].strip()
-                    found_services.append(service)
-        
-        if found_services:
-            return {
-                "tool": "Maigret",
-                "status": "Erfolgreich",
-                "message": f"E-Mail bei {len(found_services)} Diensten gefunden",
-                "found_services": found_services,
-                "raw_output": output
-            }
-        else:
-            return {
-                "tool": "Maigret",
-                "status": "Keine Treffer",
-                "message": "E-Mail bei keinem der überprüften Dienste gefunden",
-                "found_services": [],
-                "raw_output": output
-            }
-    
-    def _parse_sherlock_output(self, output: str, username: str) -> Dict:
-        """Parst die Sherlock-Ausgabe"""
-        lines = output.strip().split('\n')
-        found_services = []
-        
-        for line in lines:
-            if 'Found' in line:
-                # Sherlock-Format: [Found] Service Name: URL
-                if '[Found]' in line:
-                    parts = line.split('[Found]')
-                    if len(parts) >= 2:
-                        service_part = parts[1].split(':')[0].strip()
-                        found_services.append(service_part)
-        
-        if found_services:
-            return {
-                "tool": "Sherlock",
-                "status": "Erfolgreich",
-                "message": f"Username bei {len(found_services)} Diensten gefunden",
-                "found_services": found_services,
-                "raw_output": output
-            }
-        else:
-            return {
-                "tool": "Sherlock",
-                "status": "Keine Treffer",
-                "message": f"Username '{username}' bei keinem der überprüften Dienste gefunden",
-                "found_services": [],
-                "raw_output": output
-            }
-    
-    def run_fallback_scan(self, email: str) -> List[Dict]:
-        """Führt alle verfügbaren OSINT-Tools als Fallback aus"""
-        if not any(self.tools_available.values()):
-            return []
-        
-        self.console.print(f"\n[bold yellow]OSINT-Fallback-Scan gestartet...[/bold yellow]")
-        self.console.print(f"[yellow]Verwende verfügbare Tools nach eigener Auswertung[/yellow]")
-        
+    def run_osint_scan(self, email: str) -> List[Dict]:
+        """Führt Holehe-Scan für eine E-Mail-Adresse durch"""
         results = []
         
-        # Holehe
-        if self.tools_available["holehe"]:
-            holehe_result = self.run_holehe_scan(email)
-            if holehe_result:
-                results.append(holehe_result)
-        
-        # Maigret
-        if self.tools_available["maigret"]:
-            maigret_result = self.run_maigret_scan(email)
-            if maigret_result:
-                results.append(maigret_result)
-        
-        # Sherlock
-        if self.tools_available["sherlock"]:
-            sherlock_result = self.run_sherlock_scan(email)
-            if sherlock_result:
-                results.append(sherlock_result)
+        # Holehe-Scan
+        holehe_result = self.run_holehe_scan(email)
+        if holehe_result:
+            results.append(holehe_result)
         
         return results
     
-    def run_osint_scan_with_manager(self, email: str) -> List[Dict]:
-        """Führt einen OSINT-Scan mit dem neuen Manager durch"""
-        results = []
-        
-        # Verwende den neuen Manager für Scans
-        if self.osint_manager.tools_available.get("holehe", False):
-            # Übermittle Scan an Holehe
-            scan_id = self.osint_manager.submit_scan("holehe", email)
-            if scan_id:
-                # Warte auf Ergebnis
-                holehe_result = self.osint_manager.get_scan_result("holehe", timeout=30)
-                if holehe_result and holehe_result.get("success"):
-                    parsed_result = self._parse_holehe_output(holehe_result["output"], email)
-                    results.append(parsed_result)
-        
-        if self.osint_manager.tools_available.get("maigret", False):
-            # Übermittle Scan an Maigret
-            scan_id = self.osint_manager.submit_scan("maigret", email)
-            if scan_id:
-                # Warte auf Ergebnis
-                maigret_result = self.osint_manager.get_scan_result("maigret", timeout=180)
-                if maigret_result and maigret_result.get("success"):
-                    parsed_result = self._parse_maigret_output(maigret_result["output"], email)
-                    results.append(parsed_result)
-        
-        if self.osint_manager.tools_available.get("sherlock", False):
-            # Übermittle Scan an Sherlock
-            username = email.split('@')[0]
-            scan_id = self.osint_manager.submit_scan("sherlock", username)
-            if scan_id:
-                # Warte auf Ergebnis
-                sherlock_result = self.osint_manager.get_scan_result("sherlock", timeout=120)
-                if sherlock_result and sherlock_result.get("success"):
-                    parsed_result = self._parse_sherlock_output(sherlock_result["output"], username)
-                    results.append(parsed_result)
-        
-        return results
+    def stop_all_tools(self):
+        """Stoppt alle OSINT-Tools (leer, da keine Threads mehr laufen)"""
+        pass
 
 class EmailScanner:
     def __init__(self):
@@ -802,11 +109,8 @@ class EmailScanner:
         self.reports_dir = "reports"
         self.create_reports_directory()
         
-        # Verwende den neuen OSINT-Tool-Manager mit Subthreads
-        self.osint_manager = OSINTToolManager(self.console)
-        
-        # Fallback für Legacy-Funktionalität
-        self.osint_scanner = OSINTFallbackScanner(self.console)
+        # Verwende den direkten Scanner für OSINT-Tools
+        self.osint_scanner = OSINTScanner(self.console)
         
     def create_reports_directory(self):
         """Erstellt den Reports-Ordner, falls er nicht existiert"""
@@ -1573,13 +877,13 @@ class EmailScanner:
                 
                 progress.advance(task)
         
-        # OSINT-Scan mit dem neuen Manager
-        if any(self.osint_manager.tools_available.values()):
+        # OSINT-Scan mit dem direkten Scanner
+        if self.osint_scanner.holehe_available:
             self.console.print(f"\n[bold cyan]Eigene E-Mail-Auswertung abgeschlossen.[/bold cyan]")
-            self.console.print(f"[cyan]Starte OSINT-Scan mit verfügbaren Tools...[/cyan]")
+            self.console.print(f"[cyan]Starte OSINT-Scan mit Holehe...[/cyan]")
             
-            # Verwende den neuen Manager für bessere Performance
-            osint_results = self.osint_manager.run_osint_scan_with_manager(email)
+            # Verwende den direkten Scanner für bessere Performance
+            osint_results = self.osint_scanner.run_osint_scan(email)
             if osint_results:
                 # Füge OSINT-Ergebnisse zu den bestehenden Ergebnissen hinzu
                 for osint_result in osint_results:
@@ -1587,20 +891,24 @@ class EmailScanner:
                     converted_result = {
                         "website": f"OSINT-{osint_result['tool']}",
                         "url": "OSINT-Tool",
-                        "status": osint_result['status'],
-                        "message": osint_result['message'],
+                        "status": "Verfügbar" if osint_result.get('total_found', 0) > 0 else "Nicht gefunden",
+                        "message": f"Holehe-Scan abgeschlossen: {osint_result.get('total_found', 0)} Dienste gefunden",
                         "timestamp": datetime.now().isoformat(),
                         "osint_data": osint_result
                     }
                     results.append(converted_result)
                     
                     # Zeige OSINT-Ergebnisse sofort an
-                    status_color = "green" if osint_result['status'] == "Erfolgreich" else "red" if osint_result['status'] == "Fehler" else "yellow"
-                    self.console.print(f"  OSINT-{osint_result['tool']:<15} - [{status_color}]{osint_result['status']}[/{status_color}]")
-                    if osint_result.get('found_services'):
-                        self.console.print(f"       → Gefundene Dienste: {', '.join(osint_result['found_services'][:5])}")
-                        if len(osint_result['found_services']) > 5:
-                            self.console.print(f"       → ... und {len(osint_result['found_services']) - 5} weitere")
+                    if osint_result.get('total_found', 0) > 0:
+                        self.console.print(f"  OSINT-{osint_result['tool']:<15} - [green]Verfügbar[/green]")
+                        self.console.print(f"       → Gefundene Dienste: {osint_result.get('total_found', 0)}")
+                        if osint_result.get('results'):
+                            found_sites = [result.get('site', 'Unknown') for result in osint_result['results'][:5]]
+                            self.console.print(f"       → Beispiele: {', '.join(found_sites)}")
+                            if len(osint_result['results']) > 5:
+                                self.console.print(f"       → ... und {len(osint_result['results']) - 5} weitere")
+                    else:
+                        self.console.print(f"  OSINT-{osint_result['tool']:<15} - [yellow]Nicht gefunden[/yellow]")
         
         return results
     
@@ -1982,63 +1290,128 @@ class EmailScanner:
             self.console.print("[yellow]Keine Ergebnisse zum Anzeigen.[/yellow]")
             return
         
-        # Erstelle Tabelle
-        table = Table(title="E-Mail-Scan Ergebnisse")
-        table.add_column("Website", style="cyan", no_wrap=True)
-        table.add_column("Status", style="bold")
-        table.add_column("URL", style="blue", no_wrap=False)
-        table.add_column("Nachricht", style="white", no_wrap=False)
+        # Trenne normale Website-Ergebnisse von OSINT-Ergebnissen
+        website_results = []
+        osint_results = []
         
-        # Füge Zeilen hinzu
         for result in results:
-            # Stelle sicher, dass der Website-Name korrekt ist
-            website_name = result.get("website", "Unbekannt")
-            if website_name == "Unbekannt":
-                # Versuche, den Namen aus der URL zu extrahieren
-                url = result.get("url", "")
-                if url:
-                    # Extrahiere Domain-Name
-                    try:
-                        from urllib.parse import urlparse
-                        parsed = urlparse(url)
-                        domain = parsed.netloc.replace('www.', '').split('.')[0]
-                        website_name = domain.capitalize()
-                    except:
-                        website_name = "Unbekannt"
-            
-            # Status-Farbe
-            status = result.get("status", "Unbekannt")
-            if status == "Verfügbar":
-                status_style = "green"
-            elif status == "Registriert":
-                status_style = "red"
-            elif status == "Fehler":
-                status_style = "yellow"
+            if result.get("website", "").startswith("OSINT-"):
+                osint_results.append(result)
             else:
-                status_style = "white"
-            
-            table.add_row(
-                website_name,
-                f"[{status_style}]{status}[/{status_style}]",
-                result.get("url", ""),
-                result.get("message", "")
-            )
+                website_results.append(result)
         
-        self.console.print(table)
+        # Zeige Website-Ergebnisse
+        if website_results:
+            self.console.print("\n[bold cyan]📊 Website-Scan Ergebnisse[/bold cyan]")
+            self.console.print("=" * 80)
+            
+            # Erstelle Tabelle für Website-Ergebnisse
+            table = Table(show_header=True, header_style="bold magenta")
+            table.add_column("Nr.", style="dim", width=4)
+            table.add_column("Website", style="cyan", width=20)
+            table.add_column("Status", style="bold", width=15)
+            table.add_column("URL", style="blue", width=30)
+            table.add_column("Nachricht", style="white", width=40)
+            
+            # Füge Zeilen hinzu
+            for i, result in enumerate(website_results, 1):
+                # Status-Farbe und Symbol
+                status = result.get("status", "Unbekannt")
+                if status == "Verfügbar":
+                    status_style = "[green]✓ Verfügbar[/green]"
+                elif status == "Registriert":
+                    status_style = "[red]✗ Registriert[/red]"
+                elif status == "Fehler":
+                    status_style = "[yellow]⚠ Fehler[/yellow]"
+                else:
+                    status_style = "[white]? Unbekannt[/white]"
+                
+                # URL kürzen für bessere Darstellung
+                url = result.get("url", "")
+                if len(url) > 30:
+                    url = url[:27] + "..."
+                
+                # Nachricht kürzen
+                message = result.get("message", "")
+                if len(message) > 40:
+                    message = message[:37] + "..."
+                
+                table.add_row(
+                    str(i),
+                    result.get("website", "Unbekannt"),
+                    status_style,
+                    url,
+                    message
+                )
+            
+            self.console.print(table)
+        
+        # Zeige OSINT-Ergebnisse
+        if osint_results:
+            self.console.print("\n[bold cyan]🔍 OSINT-Tool Ergebnisse[/bold cyan]")
+            self.console.print("=" * 80)
+            
+            for osint_result in osint_results:
+                tool_name = osint_result.get("website", "").replace("OSINT-", "")
+                status = osint_result.get("status", "Unbekannt")
+                
+                if status == "Verfügbar":
+                    status_style = "[green]✓ Verfügbar[/green]"
+                    found_count = osint_result.get("osint_data", {}).get("total_found", 0)
+                    total_checked = osint_result.get("osint_data", {}).get("total_checked", 0)
+                    
+                    self.console.print(f"[bold]{tool_name}:[/bold] {status_style}")
+                    self.console.print(f"  📊 Gefunden: {found_count}/{total_checked} Dienste")
+                    
+                    # Zeige gefundene Dienste
+                    if osint_result.get("osint_data", {}).get("results"):
+                        found_sites = [result.get("site", "Unknown") for result in osint_result["osint_data"]["results"]]
+                        if found_sites:
+                            self.console.print(f"  🎯 Gefundene Dienste:")
+                            # Zeige die ersten 10 Dienste
+                            for i, site in enumerate(found_sites[:10], 1):
+                                self.console.print(f"    {i:2d}. {site}")
+                            if len(found_sites) > 10:
+                                self.console.print(f"    ... und {len(found_sites) - 10} weitere")
+                else:
+                    status_style = "[yellow]⚠ Nicht gefunden[/yellow]"
+                    self.console.print(f"[bold]{tool_name}:[/bold] {status_style}")
+                    self.console.print(f"  📊 Keine Dienste gefunden")
+                
+                self.console.print()
         
         # Zusammenfassung
-        total = len(results)
-        available = sum(1 for r in results if r.get("status") == "Verfügbar")
-        registered = sum(1 for r in results if r.get("status") == "Registriert")
-        errors = sum(1 for r in results if r.get("status") == "Fehler")
-        unknown = sum(1 for r in results if r.get("status") == "Unbekannt")
+        self.console.print("\n[bold cyan]📈 Zusammenfassung[/bold cyan]")
+        self.console.print("=" * 80)
         
-        self.console.print(f"\n[bold]Zusammenfassung:[/bold]")
-        self.console.print(f"  Gesamt: {total}")
-        self.console.print(f"  Verfügbar: [green]{available}[/green]")
-        self.console.print(f"  Registriert: [red]{registered}[/red]")
-        self.console.print(f"  Fehler: [yellow]{errors}[/yellow]")
-        self.console.print(f"  Unbekannt: [white]{unknown}[/white]")
+        # Website-Statistiken
+        if website_results:
+            total_websites = len(website_results)
+            available = sum(1 for r in website_results if r.get("status") == "Verfügbar")
+            registered = sum(1 for r in website_results if r.get("status") == "Registriert")
+            errors = sum(1 for r in website_results if r.get("status") == "Fehler")
+            unknown = sum(1 for r in website_results if r.get("status") == "Unbekannt")
+            
+            self.console.print(f"[bold]🌐 Website-Scans:[/bold]")
+            self.console.print(f"  Gesamt: {total_websites}")
+            self.console.print(f"  Verfügbar: [green]{available}[/green]")
+            self.console.print(f"  Registriert: [red]{registered}[/red]")
+            self.console.print(f"  Fehler: [yellow]{errors}[/yellow]")
+            self.console.print(f"  Unbekannt: [white]{unknown}[/white]")
+        
+        # OSINT-Statistiken
+        if osint_results:
+            total_osint = len(osint_results)
+            osint_found = sum(1 for r in osint_results if r.get("status") == "Verfügbar")
+            
+            self.console.print(f"\n[bold]🔍 OSINT-Tools:[/bold]")
+            self.console.print(f"  Gesamt: {total_osint}")
+            self.console.print(f"  Erfolgreich: [green]{osint_found}[/green]")
+            self.console.print(f"  Fehlgeschlagen: [red]{total_osint - osint_found}[/red]")
+        
+        # Gesamtstatistik
+        total_all = len(results)
+        self.console.print(f"\n[bold]📊 Gesamt:[/bold] {total_all} Ergebnisse")
     
     def export_report(self, email: str, results: List[Dict], format_type: str = "json"):
         """Exportiert den Bericht in verschiedenen Formaten"""
@@ -2047,11 +1420,40 @@ class EmailScanner:
         
         if format_type == "json":
             filename = os.path.join(self.reports_dir, f"email_scan_{safe_email}_{timestamp}.json")
+            
+            # Trenne Website-Ergebnisse von OSINT-Ergebnissen
+            website_results = []
+            osint_results = []
+            
+            for result in results:
+                if result.get("website", "").startswith("OSINT-"):
+                    osint_results.append(result)
+                else:
+                    website_results.append(result)
+            
+            # Erstelle strukturierten Bericht
             report_data = {
                 "email": email,
                 "scan_timestamp": datetime.now().isoformat(),
-                "total_websites": len(results),
-                "results": results
+                "scan_summary": {
+                    "total_websites": len(website_results),
+                    "total_osint_tools": len(osint_results),
+                    "total_results": len(results)
+                },
+                "website_scan_results": website_results,
+                "osint_tool_results": osint_results,
+                "statistics": {
+                    "websites": {
+                        "available": sum(1 for r in website_results if r.get("status") == "Verfügbar"),
+                        "registered": sum(1 for r in website_results if r.get("status") == "Registriert"),
+                        "errors": sum(1 for r in website_results if r.get("status") == "Fehler"),
+                        "unknown": sum(1 for r in website_results if r.get("status") == "Unbekannt")
+                    },
+                    "osint_tools": {
+                        "successful": sum(1 for r in osint_results if r.get("status") == "Verfügbar"),
+                        "failed": sum(1 for r in osint_results if r.get("status") != "Verfügbar")
+                    }
+                }
             }
             
             with open(filename, 'w', encoding='utf-8') as f:
@@ -2059,21 +1461,79 @@ class EmailScanner:
                 
         elif format_type == "txt":
             filename = os.path.join(self.reports_dir, f"email_scan_{safe_email}_{timestamp}.txt")
+            
+            # Trenne Website-Ergebnisse von OSINT-Ergebnissen
+            website_results = []
+            osint_results = []
+            
+            for result in results:
+                if result.get("website", "").startswith("OSINT-"):
+                    osint_results.append(result)
+                else:
+                    website_results.append(result)
+            
             with open(filename, 'w', encoding='utf-8') as f:
-                f.write(f"E-Mail-Scan Bericht\n")
-                f.write(f"==================\n\n")
+                f.write("=" * 80 + "\n")
+                f.write("E-Mail-Scan Bericht\n")
+                f.write("=" * 80 + "\n\n")
                 f.write(f"E-Mail: {email}\n")
                 f.write(f"Scan-Datum: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}\n")
-                f.write(f"Anzahl Websites: {len(results)}\n\n")
+                f.write(f"Anzahl Websites: {len(website_results)}\n")
+                f.write(f"Anzahl OSINT-Tools: {len(osint_results)}\n")
+                f.write(f"Gesamt-Ergebnisse: {len(results)}\n\n")
                 
-                for result in results:
-                    f.write(f"Website: {result['website']}\n")
-                    f.write(f"Status: {result['status']}\n")
-                    f.write(f"URL: {result['url']}\n")
-                    f.write(f"Nachricht: {result['message']}\n")
-                    f.write("-" * 50 + "\n\n")
+                # Website-Ergebnisse
+                if website_results:
+                    f.write("Website-Scan Ergebnisse:\n")
+                    f.write("-" * 50 + "\n")
+                    for result in website_results:
+                        f.write(f"Website: {result['website']}\n")
+                        f.write(f"Status: {result['status']}\n")
+                        f.write(f"URL: {result['url']}\n")
+                        f.write(f"Nachricht: {result['message']}\n")
+                        f.write("-" * 30 + "\n\n")
+                
+                # OSINT-Ergebnisse
+                if osint_results:
+                    f.write("OSINT-Tool Ergebnisse:\n")
+                    f.write("-" * 50 + "\n")
+                    for result in osint_results:
+                        tool_name = result.get("website", "").replace("OSINT-", "")
+                        f.write(f"Tool: {tool_name}\n")
+                        f.write(f"Status: {result['status']}\n")
+                        if result.get("osint_data"):
+                            osint_data = result["osint_data"]
+                            f.write(f"Gefundene Dienste: {osint_data.get('total_found', 0)}/{osint_data.get('total_checked', 0)}\n")
+                            if osint_data.get("results"):
+                                f.write("Gefundene Websites:\n")
+                                for site_result in osint_data["results"]:
+                                    f.write(f"  - {site_result.get('site', 'Unknown')}\n")
+                        f.write("-" * 30 + "\n\n")
+                
+                # Statistiken
+                f.write("Statistiken:\n")
+                f.write("-" * 50 + "\n")
+                if website_results:
+                    available = sum(1 for r in website_results if r.get("status") == "Verfügbar")
+                    registered = sum(1 for r in website_results if r.get("status") == "Registriert")
+                    errors = sum(1 for r in website_results if r.get("status") == "Fehler")
+                    unknown = sum(1 for r in website_results if r.get("status") == "Unbekannt")
+                    
+                    f.write(f"Websites:\n")
+                    f.write(f"  Verfügbar: {available}\n")
+                    f.write(f"  Registriert: {registered}\n")
+                    f.write(f"  Fehler: {errors}\n")
+                    f.write(f"  Unbekannt: {unknown}\n\n")
+                
+                if osint_results:
+                    successful = sum(1 for r in osint_results if r.get("status") == "Verfügbar")
+                    failed = sum(1 for r in osint_results if r.get("status") != "Verfügbar")
+                    
+                    f.write(f"OSINT-Tools:\n")
+                    f.write(f"  Erfolgreich: {successful}\n")
+                    f.write(f"  Fehlgeschlagen: {failed}\n")
         
-        self.console.print(f"\n[green]Bericht wurde exportiert: {filename}[/green]")
+        self.console.print(f"\n[green]✅ Bericht wurde exportiert: {filename}[/green]")
         return filename
     
     def show_main_menu(self):
@@ -2084,8 +1544,7 @@ class EmailScanner:
         self.console.print("1. E-Mail-Adresse scannen")
         self.console.print("2. Verfügbare Websites anzeigen")
         self.console.print("3. Berichte anzeigen")
-        self.console.print("4. OSINT-Tools Status anzeigen")
-        self.console.print("5. Beenden")
+        self.console.print("4. Beenden")
         self.console.print("="*70)
     
     def show_scan_menu(self):
@@ -2149,19 +1608,17 @@ class EmailScanner:
                 elif choice == "3":
                     self.list_reports()
                 elif choice == "4":
-                    self.osint_manager.show_tools_status()
-                elif choice == "5":
                     self.console.print("\n[yellow]Machs gut du russische Schlampe![/yellow]")
                     # Stoppe alle OSINT-Tools beim Beenden
-                    self.osint_manager.stop_all_tools()
+                    self.osint_scanner.stop_all_tools()
                     break
                 else:
-                    self.console.print("[red]Ungültige Auswahl. Bitte wähle 1, 2, 3, 4 oder 5.[/red]")
+                    self.console.print("[red]Ungültige Auswahl. Bitte wähle 1, 2, 3 oder 4.[/red]")
                     
             except KeyboardInterrupt:
                 self.console.print("\n\n[yellow]Programm wird beendet...[/yellow]")
                 # Stoppe alle OSINT-Tools beim Beenden
-                self.osint_manager.stop_all_tools()
+                self.osint_scanner.stop_all_tools()
                 break
             except Exception as e:
                 self.console.print(f"[red]Fehler: {str(e)}[/red]")
@@ -2285,15 +1742,15 @@ OSINT-Fallback-Tools:
     except KeyboardInterrupt:
         print("\n\n[yellow]Anwendung wird beendet...[/yellow]")
         # Stoppe alle OSINT-Tools
-        scanner.osint_manager.stop_all_tools()
+        scanner.osint_scanner.stop_all_tools()
     except Exception as e:
         print(f"\n[red]Unerwarteter Fehler: {e}[/red]")
         # Stoppe alle OSINT-Tools
-        scanner.osint_manager.stop_all_tools()
+        scanner.osint_scanner.stop_all_tools()
     finally:
         # Stoppe alle OSINT-Tools beim Beenden
         try:
-            scanner.osint_manager.stop_all_tools()
+            scanner.osint_scanner.stop_all_tools()
         except:
             pass
 
