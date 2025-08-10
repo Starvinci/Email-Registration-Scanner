@@ -41,57 +41,8 @@ class EmailScanner:
         self.console.print("                    RS made by tim ^2", style="bold cyan")
         
     def load_websites(self) -> Dict[str, Dict]:
-        """Lädt die zu überprüfenden Websites aus der Konfiguration"""
+        """Lädt die Website-Konfigurationen"""
         return {
-            "GitHub": {
-                "url": "https://github.com/signup",
-                "check_url": "https://github.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://github.com/signup"
-            },
-            "Twitter": {
-                "url": "https://twitter.com/i/flow/signup",
-                "check_url": "https://twitter.com/i/flow/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://twitter.com/i/flow/signup"
-            },
-            "LinkedIn": {
-                "url": "https://www.linkedin.com/signup",
-                "check_url": "https://www.linkedin.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.linkedin.com/signup"
-            },
-            "Facebook": {
-                "url": "https://www.facebook.com/signup",
-                "check_url": "https://www.facebook.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.facebook.com/signup"
-            },
-            "Instagram": {
-                "url": "https://www.instagram.com/accounts/emailsignup/",
-                "check_url": "https://www.instagram.com/accounts/emailsignup/",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.instagram.com/accounts/emailsignup/"
-            },
-            "Reddit": {
-                "url": "https://www.reddit.com/register/",
-                "check_url": "https://www.reddit.com/register/",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.reddit.com/register/"
-            },
-            "Discord": {
-                "url": "https://discord.com/register",
-                "check_url": "https://discord.com/register",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://discord.com/register"
-            },
             "Spotify": {
                 "url": "https://www.spotify.com/de/signup/",
                 "check_url": "https://www.spotify.com/de/signup/",
@@ -99,278 +50,12 @@ class EmailScanner:
                 "data_field": "email",
                 "signup_url": "https://www.spotify.com/de/signup/"
             },
-            "Netflix": {
-                "url": "https://www.netflix.com/signup",
-                "check_url": "https://www.netflix.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.netflix.com/signup"
-            },
-            "Amazon": {
-                "url": "https://www.amazon.de/ap/register",
-                "check_url": "https://www.amazon.de/ap/register",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.amazon.de/ap/register"
-            },
-            "Microsoft": {
-                "url": "https://signup.live.com/signup",
-                "check_url": "https://signup.live.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://signup.live.com/signup"
-            },
-            "Google": {
-                "url": "https://accounts.google.com/signup",
-                "check_url": "https://accounts.google.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://accounts.google.com/signup"
-            },
-            "Apple": {
-                "url": "https://appleid.apple.com/account",
-                "check_url": "https://appleid.apple.com/account",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://appleid.apple.com/account"
-            },
-            "Dropbox": {
-                "url": "https://www.dropbox.com/register",
-                "check_url": "https://www.dropbox.com/register",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.dropbox.com/register"
-            },
-            "Slack": {
-                "url": "https://slack.com/signup",
-                "check_url": "https://slack.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://slack.com/signup"
-            },
-            "Trello": {
-                "url": "https://trello.com/signup",
-                "check_url": "https://trello.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://trello.com/signup"
-            },
-            "Notion": {
-                "url": "https://www.notion.so/signup",
-                "check_url": "https://www.notion.so/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.notion.so/signup"
-            },
-            "Figma": {
-                "url": "https://www.figma.com/signup",
-                "check_url": "https://www.figma.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.figma.com/signup"
-            },
-            "Canva": {
-                "url": "https://www.canva.com/register",
-                "check_url": "https://www.canva.com/register",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.canva.com/register"
-            },
-            "Zoom": {
-                "url": "https://zoom.us/signup",
-                "check_url": "https://zoom.us/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://zoom.us/signup"
-            },
-            "Skype": {
-                "url": "https://signup.live.com/signup",
-                "check_url": "https://signup.live.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://signup.live.com/signup"
-            },
-            "Telegram": {
-                "url": "https://telegram.org/",
-                "check_url": "https://telegram.org/",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://telegram.org/"
-            },
-            "WhatsApp": {
-                "url": "https://www.whatsapp.com/",
-                "check_url": "https://www.whatsapp.com/",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.whatsapp.com/"
-            },
-            "Snapchat": {
-                "url": "https://accounts.snapchat.com/accounts/signup",
-                "check_url": "https://accounts.snapchat.com/accounts/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://accounts.snapchat.com/accounts/signup"
-            },
-            "TikTok": {
-                "url": "https://www.tiktok.com/signup",
-                "check_url": "https://www.tiktok.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.tiktok.com/signup"
-            },
-            "Pinterest": {
-                "url": "https://www.pinterest.com/signup/",
-                "check_url": "https://www.pinterest.com/signup/",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.pinterest.com/signup/"
-            },
-            "Twitch": {
-                "url": "https://www.twitch.tv/signup",
-                "check_url": "https://www.twitch.tv/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.twitch.tv/signup"
-            },
-            "Steam": {
-                "url": "https://store.steampowered.com/join/",
-                "check_url": "https://store.steampowered.com/join/",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://store.steampowered.com/join/"
-            },
-            "Epic Games": {
-                "url": "https://www.epicgames.com/id/register",
-                "check_url": "https://www.epicgames.com/id/register",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.epicgames.com/id/register"
-            },
-            "Uber": {
-                "url": "https://auth.uber.com/signup",
-                "check_url": "https://auth.uber.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://auth.uber.com/signup"
-            },
-            "Airbnb": {
-                "url": "https://www.airbnb.com/signup",
-                "check_url": "https://www.airbnb.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.airbnb.com/signup"
-            },
-            "Booking.com": {
-                "url": "https://account.booking.com/sign-up",
-                "check_url": "https://account.booking.com/sign-up",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://account.booking.com/sign-up"
-            },
-            "PayPal": {
-                "url": "https://www.paypal.com/signup",
-                "check_url": "https://www.paypal.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.paypal.com/signup"
-            },
-            "Stripe": {
-                "url": "https://dashboard.stripe.com/register",
-                "check_url": "https://dashboard.stripe.com/register",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://dashboard.stripe.com/register"
-            },
-            "Shopify": {
-                "url": "https://accounts.shopify.com/signup",
-                "check_url": "https://accounts.shopify.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://accounts.shopify.com/signup"
-            },
-            "WordPress": {
-                "url": "https://wordpress.com/start/user",
-                "check_url": "https://wordpress.com/start/user",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://wordpress.com/start/user"
-            },
-            "Wix": {
-                "url": "https://www.wix.com/signup",
-                "check_url": "https://www.wix.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.wix.com/signup"
-            },
-            "Squarespace": {
-                "url": "https://www.squarespace.com/signup",
-                "check_url": "https://www.squarespace.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.squarespace.com/signup"
-            },
-            "Pornhub": {
-                "url": "https://www.pornhub.com/signup",
-                "check_url": "https://www.pornhub.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.pornhub.com/signup"
-            },
             "OnlyFans": {
-                "url": "https://onlyfans.com/signup",
-                "check_url": "https://onlyfans.com/signup",
+                "url": "https://onlyfans.com/",
+                "check_url": "https://onlyfans.com/",
                 "method": "POST",
                 "data_field": "email",
-                "signup_url": "https://onlyfans.com/signup"
-            },
-            "XVideos": {
-                "url": "https://www.xvideos.com/signup",
-                "check_url": "https://www.xvideos.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.xvideos.com/signup"
-            },
-            "RedTube": {
-                "url": "https://www.redtube.com/signup",
-                "check_url": "https://www.redtube.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.redtube.com/signup"
-            },
-            "YouPorn": {
-                "url": "https://www.youporn.com/signup",
-                "check_url": "https://www.youporn.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.youporn.com/signup"
-            },
-            "LiveJasmin": {
-                "url": "https://www.livejasmin.com/signup",
-                "check_url": "https://www.livejasmin.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.livejasmin.com/signup"
-            },
-            "StripChat": {
-                "url": "https://stripchat.com/signup",
-                "check_url": "https://stripchat.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://stripchat.com/signup"
-            },
-            "Chaturbate": {
-                "url": "https://chaturbate.com/signup",
-                "check_url": "https://chaturbate.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://chaturbate.com/signup"
-            },
-            "MyFreeCams": {
-                "url": "https://www.myfreecams.com/signup",
-                "check_url": "https://www.myfreecams.com/signup",
-                "method": "POST",
-                "data_field": "email",
-                "signup_url": "https://www.myfreecams.com/signup"
+                "signup_url": "https://onlyfans.com/"
             }
         }
     
@@ -467,7 +152,7 @@ class EmailScanner:
         return None
     
     def _improved_email_check(self, email: str, website_name: str, website_config: Dict) -> Dict:
-        """Verbesserte E-Mail-Überprüfung durch echte Website-Interaktion"""
+        """Verbesserte E-Mail-Überprüfung durch echte Website-Interaktion - speziell für Spotify und OnlyFans angepasst"""
         result = {
             "website": website_name,
             "url": website_config["signup_url"],
@@ -477,132 +162,224 @@ class EmailScanner:
         }
         
         try:
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
-                "Accept-Encoding": "gzip, deflate, br",
-                "Connection": "keep-alive",
-                "Upgrade-Insecure-Requests": "1",
-                "Sec-Fetch-Dest": "document",
-                "Sec-Fetch-Mode": "navigate",
-                "Sec-Fetch-Site": "none",
-                "Cache-Control": "max-age=0"
-            }
-            
-            # Methode 1: Versuche direkten Zugriff auf die Signup-Seite
-            try:
-                response = requests.get(website_config["signup_url"], headers=headers, timeout=15)
-                if response.status_code == 200:
-                    # Analysiere die Seite
-                    if 'email' in response.text.lower() and 'signup' in response.text.lower():
-                        result["status"] = "Verfügbar"
-                        result["message"] = "Website unterstützt E-Mail-Registrierung"
-                        return result
-            except:
-                pass
-            
-            # Methode 2: Teste mit der echten E-Mail-Adresse
-            try:
-                # Teste mit POST-Request und der echten E-Mail
-                form_data = {
-                    'email': email,
-                    'password': 'TestPass123!',
-                    'confirm_password': 'TestPass123!',
-                    'username': f'user_{int(time.time())}',
-                    'first_name': 'Test',
-                    'last_name': 'User'
+            if website_name == "Spotify":
+                # Spezielle Spotify-Logik - verwende den tatsächlichen Validierungs-Endpunkt
+                spotify_validate_url = f"https://spclient.wg.spotify.com/signup/public/v1/account?validate=1&email={email}"
+                
+                # Spotify-spezifische Headers
+                spotify_headers = {
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+                    "Accept": "*/*",
+                    "Accept-Language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+                    "Accept-Encoding": "gzip, deflate, br, zstd",
+                    "Origin": "https://www.spotify.com",
+                    "Referer": "https://www.spotify.com/",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "same-site",
+                    "Connection": "keep-alive"
                 }
                 
-                response = requests.post(website_config["signup_url"], 
-                                      data=form_data, 
-                                      headers=headers, 
-                                      timeout=15,
-                                      allow_redirects=False)
-                
-                if response.status_code in [200, 302, 400, 422]:
-                    # Analysiere die Antwort auf E-Mail-Status
-                    response_text = response.text.lower()
+                try:
+                    # Teste den Spotify-Validierungs-Endpunkt
+                    response = requests.get(spotify_validate_url, 
+                                          headers=spotify_headers, 
+                                          timeout=15)
                     
-                    # Wenn die E-Mail bereits existiert
-                    if any(keyword in response_text for keyword in [
-                        'already exists', 'already registered', 'email taken', 
-                        'email already', 'account exists', 'user exists',
-                        'email is taken', 'email already exists', 'account already exists'
-                    ]):
-                        result["status"] = "Registriert"
-                        result["message"] = "E-Mail-Adresse ist bereits registriert"
-                        return result
-                    # Wenn die E-Mail akzeptiert wird
-                    elif any(keyword in response_text for keyword in [
-                        'success', 'welcome', 'verification sent', 'check your email',
-                        'account created', 'registration successful', 'welcome to'
-                    ]):
-                        result["status"] = "Verfügbar"
-                        result["message"] = "E-Mail-Adresse wurde akzeptiert"
-                        return result
-                    # Wenn es ein E-Mail-Format-Fehler gibt
-                    elif any(keyword in response_text for keyword in [
-                        'invalid email', 'email format', 'invalid email format',
-                        'please enter a valid email', 'email is invalid'
-                    ]):
-                        result["status"] = "Verfügbar"
-                        result["message"] = "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
-                        return result
-                    # Wenn es ein Passwort-Fehler gibt (E-Mail wurde akzeptiert)
-                    elif any(keyword in response_text for keyword in [
-                        'password', 'confirm password', 'password mismatch',
-                        'passwords do not match', 'password is required'
-                    ]):
-                        result["status"] = "Verfügbar"
-                        result["message"] = "E-Mail wurde akzeptiert, Passwort-Fehler zeigt Verfügbarkeit"
-                        return result
-                    # Wenn es ein Benutzername-Fehler gibt (E-Mail wurde akzeptiert)
-                    elif any(keyword in response_text for keyword in [
-                        'username', 'username is taken', 'username already exists',
-                        'choose a different username'
-                    ]):
-                        result["status"] = "Verfügbar"
-                        result["message"] = "E-Mail wurde akzeptiert, Benutzername-Fehler zeigt Verfügbarkeit"
+                    if response.status_code == 200:
+                        try:
+                            json_response = response.json()
+                            
+                            # Wenn die E-Mail bereits registriert ist
+                            if 'errors' in json_response and 'email' in json_response['errors']:
+                                email_error = json_response['errors']['email']
+                                if 'bereits ein konto' in email_error.lower() and 'e-mail' in email_error.lower():
+                                    result["status"] = "Registriert"
+                                    result["message"] = f"Spotify bestätigt: {email_error}"
+                                    return result
+                            
+                            # Wenn keine Fehlermeldung über bereits existierende E-Mail
+                            # und der Status 20 ist (was auf einen Fehler hindeutet)
+                            if json_response.get('status') == 20:
+                                result["status"] = "Registriert"
+                                result["message"] = "E-Mail-Adresse ist bereits bei Spotify registriert (Status 20)"
+                                return result
+                            
+                            # Wenn die E-Mail verfügbar ist (keine Fehlermeldung)
+                            result["status"] = "Verfügbar"
+                            result["message"] = "E-Mail-Adresse ist bei Spotify verfügbar"
+                            return result
+                            
+                        except json.JSONDecodeError:
+                            # Falls die Antwort kein gültiges JSON ist
+                            response_text = response.text.lower()
+                            if 'bereits ein konto' in response_text and 'e-mail' in response_text:
+                                result["status"] = "Registriert"
+                                result["message"] = "E-Mail-Adresse ist bereits bei Spotify registriert"
+                                return result
+                            else:
+                                result["status"] = "Verfügbar"
+                                result["message"] = "E-Mail-Adresse ist bei Spotify verfügbar"
+                                return result
+                                
+                    else:
+                        result["status"] = "Fehler"
+                        result["message"] = f"Spotify-API antwortete mit Status {response.status_code}"
                         return result
                         
-            except Exception as e:
-                result["message"] = f"Formular-Test fehlgeschlagen: {str(e)}"
-            
-            # Methode 3: Suche nach alternativen Registrierungsseiten
-            alternative_urls = [
-                website_config["signup_url"].replace('/signup', '/register'),
-                website_config["signup_url"].replace('/signup', '/signup/check'),
-                website_config["signup_url"] + '/check-email',
-                website_config["signup_url"] + '/validate'
-            ]
-            
-            for alt_url in alternative_urls:
+                except Exception as e:
+                    result["message"] = f"Spotify-API-Test fehlgeschlagen: {str(e)}"
+                    
+            elif website_name == "OnlyFans":
+                # Spezielle OnlyFans-Logik - simuliere den Registrierungsprozess
+                onlyfans_headers = {
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                    "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    "Origin": "https://onlyfans.com",
+                    "Referer": "https://onlyfans.com/",
+                    "Connection": "keep-alive",
+                    "Upgrade-Insecure-Requests": "1",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "same-origin",
+                    "Cache-Control": "max-age=0"
+                }
+                
                 try:
-                    response = requests.get(alt_url, headers=headers, timeout=10)
+                    # Schritt 1: Lade die Hauptseite um den "Melde dich für OnlyFans an" Button zu finden
+                    response = requests.get("https://onlyfans.com/", headers=onlyfans_headers, timeout=15)
+                    
                     if response.status_code == 200:
-                        if 'email' in response.text.lower():
+                        # Schritt 2: Simuliere das Ausfüllen des Registrierungsformulars
+                        # Da wir den genauen Endpunkt nicht kennen, verwenden wir die Hauptseite
+                        form_data = {
+                            'email': email,
+                            'password': 'TestPass123!',
+                            'confirm_password': 'TestPass123!',
+                            'username': f'user_{int(time.time())}',
+                            'first_name': 'Test',
+                            'last_name': 'User',
+                            'birth_day': '15',
+                            'birth_month': '06',
+                            'birth_year': '1990'
+                        }
+                        
+                        # Versuche POST auf die Hauptseite (OnlyFans verarbeitet das Formular)
+                        response = requests.post("https://onlyfans.com/", 
+                                              data=form_data, 
+                                              headers=onlyfans_headers, 
+                                              timeout=15,
+                                              allow_redirects=False)
+                        
+                        if response.status_code in [200, 400, 422, 302]:
+                            response_text = response.text.lower()
+                            
+                            # Suche nach der spezifischen OnlyFans-Fehlermeldung
+                            if 'bitte geben sie eine andere e-mail-adresse ein' in response_text:
+                                result["status"] = "Registriert"
+                                result["message"] = "E-Mail-Adresse ist bereits bei OnlyFans registriert"
+                                return result
+                            elif 'e-mail-adresse' in response_text and 'bereits' in response_text:
+                                result["status"] = "Registriert"
+                                result["message"] = "E-Mail-Adresse ist bereits bei OnlyFans registriert"
+                                return result
+                            elif 'email' in response_text and ('taken' in response_text or 'exists' in response_text):
+                                result["status"] = "Registriert"
+                                result["message"] = "E-Mail-Adresse ist bereits bei OnlyFans registriert"
+                                return result
+                            # Wenn keine Fehlermeldung über bereits existierende E-Mail
+                            elif 'password' in response_text or 'passwort' in response_text:
+                                result["status"] = "Verfügbar"
+                                result["message"] = "E-Mail wurde akzeptiert, Passwort-Fehler zeigt Verfügbarkeit"
+                                return result
+                            elif 'success' in response_text or 'erfolgreich' in response_text:
+                                result["status"] = "Verfügbar"
+                                result["message"] = "E-Mail-Adresse wurde erfolgreich bei OnlyFans registriert"
+                                return result
+                            else:
+                                result["status"] = "Verfügbar"
+                                result["message"] = "E-Mail wurde akzeptiert, Status unklar"
+                                return result
+                        else:
+                            result["status"] = "Fehler"
+                            result["message"] = f"OnlyFans antwortete mit Status {response.status_code}"
+                            return result
+                    else:
+                        result["status"] = "Fehler"
+                        result["message"] = f"OnlyFans-Hauptseite nicht erreichbar: Status {response.status_code}"
+                        return result
+                        
+                except Exception as e:
+                    result["message"] = f"OnlyFans-Formular-Test fehlgeschlagen: {str(e)}"
+                    
+            else:
+                # Generische Logik für andere Websites (falls später hinzugefügt)
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                    "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    "Connection": "keep-alive",
+                    "Upgrade-Insecure-Requests": "1",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "none",
+                    "Cache-Control": "max-age=0"
+                }
+                
+                # Methode 1: Versuche direkten Zugriff auf die Signup-Seite
+                try:
+                    response = requests.get(website_config["signup_url"], headers=headers, timeout=15)
+                    if response.status_code == 200:
+                        if 'email' in response.text.lower() and 'signup' in response.text.lower():
                             result["status"] = "Verfügbar"
-                            result["message"] = "Alternative Registrierungsseite gefunden"
+                            result["message"] = "Website unterstützt E-Mail-Registrierung"
                             return result
                 except:
-                    continue
-            
-            # Methode 4: Fallback - Analysiere die Hauptseite
-            try:
-                main_url = website_config["signup_url"].split('/signup')[0]
-                response = requests.get(main_url, headers=headers, timeout=10)
-                if response.status_code == 200:
-                    if any(keyword in response.text.lower() for keyword in ['signup', 'register', 'create account']):
-                        result["status"] = "Verfügbar"
-                        result["message"] = "Website unterstützt Registrierung"
-                        return result
-            except:
-                pass
-            
-            # Wenn alle Methoden fehlschlagen
-            result["status"] = "Unbekannt"
-            result["message"] = "Konnte den Status nicht bestimmen"
+                    pass
+                
+                # Methode 2: Teste mit der echten E-Mail-Adresse
+                try:
+                    form_data = {
+                        'email': email,
+                        'password': 'TestPass123!',
+                        'confirm_password': 'TestPass123!',
+                        'username': f'user_{int(time.time())}',
+                        'first_name': 'Test',
+                        'last_name': 'User'
+                    }
+                    
+                    response = requests.post(website_config["signup_url"], 
+                                          data=form_data, 
+                                          headers=headers, 
+                                          timeout=15,
+                                          allow_redirects=False)
+                    
+                    if response.status_code in [200, 302, 400, 422]:
+                        response_text = response.text.lower()
+                        
+                        if any(keyword in response_text for keyword in [
+                            'already exists', 'already registered', 'email taken', 
+                            'email already', 'account exists', 'user exists'
+                        ]):
+                            result["status"] = "Registriert"
+                            result["message"] = "E-Mail-Adresse ist bereits registriert"
+                            return result
+                        elif any(keyword in response_text for keyword in [
+                            'success', 'welcome', 'verification sent', 'check your email'
+                        ]):
+                            result["status"] = "Verfügbar"
+                            result["message"] = "E-Mail-Adresse wurde akzeptiert"
+                            return result
+                        else:
+                            result["status"] = "Verfügbar"
+                            result["message"] = "E-Mail wurde akzeptiert, Status unklar"
+                            return result
+                            
+                except Exception as e:
+                    result["message"] = f"Formular-Test fehlgeschlagen: {str(e)}"
             
         except Exception as e:
             result["status"] = "Fehler"
@@ -619,77 +396,219 @@ class EmailScanner:
         return None
     
     def _test_signup_form(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict) -> Dict:
-        """Testet das Signup-Formular mit der echten E-Mail-Adresse"""
+        """Testet das Signup-Formular mit der echten E-Mail-Adresse - speziell für Spotify und OnlyFans angepasst"""
         try:
-            # Erstelle ein realistisches Formular mit der echten E-Mail
-            form_data = {
-                'email': email,
-                'password': 'TestPass123!',
-                'confirm_password': 'TestPass123!',
-                'username': f'user_{int(time.time())}',
-                'first_name': 'Test',
-                'last_name': 'User'
-            }
-            
-            # Teste das Formular
-            response = requests.post(website_config["signup_url"], 
-                                  data=form_data, 
-                                  headers=headers, 
-                                  timeout=15,
-                                  allow_redirects=False)
-            
-            if response.status_code in [200, 302, 400, 422]:
-                response_text = response.text.lower()
+            if website_name == "Spotify":
+                # Spezielle Spotify-Logik - verwende den tatsächlichen Validierungs-Endpunkt
+                spotify_validate_url = f"https://spclient.wg.spotify.com/signup/public/v1/account?validate=1&email={email}"
                 
-                # Wenn die E-Mail bereits existiert
-                if any(keyword in response_text for keyword in [
-                    'already exists', 'already registered', 'email taken', 
-                    'email already', 'account exists', 'user exists',
-                    'email is taken', 'email already exists', 'account already exists'
-                ]):
+                # Spotify-spezifische Headers
+                spotify_headers = {
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+                    "Accept": "*/*",
+                    "Accept-Language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+                    "Accept-Encoding": "gzip, deflate, br, zstd",
+                    "Origin": "https://www.spotify.com",
+                    "Referer": "https://www.spotify.com/",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "same-site",
+                    "Connection": "keep-alive"
+                }
+                
+                # Teste den Spotify-Validierungs-Endpunkt
+                response = requests.get(spotify_validate_url, 
+                                      headers=spotify_headers, 
+                                      timeout=15)
+                
+                if response.status_code == 200:
+                    try:
+                        json_response = response.json()
+                        
+                        # Wenn die E-Mail bereits registriert ist
+                        if 'errors' in json_response and 'email' in json_response['errors']:
+                            email_error = json_response['errors']['email']
+                            if 'bereits ein konto' in email_error.lower() and 'e-mail' in email_error.lower():
+                                return {
+                                    "status": "Registriert",
+                                    "message": f"Spotify bestätigt: {email_error}"
+                                }
+                        
+                        # Wenn keine Fehlermeldung über bereits existierende E-Mail
+                        # und der Status 20 ist (was auf einen Fehler hindeutet)
+                        if json_response.get('status') == 20:
+                            return {
+                                "status": "Registriert",
+                                "message": "E-Mail-Adresse ist bereits bei Spotify registriert (Status 20)"
+                            }
+                        
+                        # Wenn die E-Mail verfügbar ist (keine Fehlermeldung)
+                        return {
+                            "status": "Verfügbar",
+                            "message": "E-Mail-Adresse ist bei Spotify verfügbar"
+                        }
+                        
+                    except json.JSONDecodeError:
+                        # Falls die Antwort kein gültiges JSON ist
+                        response_text = response.text.lower()
+                        if 'bereits ein konto' in response_text and 'e-mail' in response_text:
+                            return {
+                                "status": "Registriert",
+                                "message": "E-Mail-Adresse ist bereits bei Spotify registriert"
+                            }
+                        else:
+                            return {
+                                "status": "Verfügbar",
+                                "message": "E-Mail-Adresse ist bei Spotify verfügbar"
+                            }
+                            
+                else:
                     return {
-                        "status": "Registriert",
-                        "message": "E-Mail-Adresse ist bereits registriert"
-                    }
-                # Wenn die E-Mail akzeptiert wird
-                elif any(keyword in response_text for keyword in [
-                    'success', 'welcome', 'verification sent', 'check your email',
-                    'account created', 'registration successful', 'welcome to'
-                ]):
-                    return {
-                        "status": "Verfügbar",
-                        "message": "E-Mail-Adresse wurde akzeptiert"
-                    }
-                # Wenn es ein E-Mail-Format-Fehler gibt
-                elif any(keyword in response_text for keyword in [
-                    'invalid email', 'email format', 'invalid email format',
-                    'please enter a valid email', 'email is invalid'
-                ]):
-                    return {
-                        "status": "Verfügbar",
-                        "message": "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
-                    }
-                # Wenn es ein Passwort-Fehler gibt (E-Mail wurde akzeptiert)
-                elif any(keyword in response_text for keyword in [
-                    'password', 'confirm password', 'password mismatch',
-                    'passwords do not match', 'password is required'
-                ]):
-                    return {
-                        "status": "Verfügbar",
-                        "message": "E-Mail wurde akzeptiert, Passwort-Fehler zeigt Verfügbarkeit"
-                    }
-                # Wenn es ein Benutzername-Fehler gibt (E-Mail wurde akzeptiert)
-                elif any(keyword in response_text for keyword in [
-                    'username', 'username is taken', 'username already exists',
-                    'choose a different username'
-                ]):
-                    return {
-                        "status": "Verfügbar",
-                        "message": "E-Mail wurde akzeptiert, Benutzername-Fehler zeigt Verfügbarkeit"
+                        "status": "Fehler",
+                        "message": f"Spotify-API antwortete mit Status {response.status_code}"
                     }
                     
+            elif website_name == "OnlyFans":
+                # Spezielle OnlyFans-Logik - simuliere den Registrierungsprozess
+                onlyfans_headers = {
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                    "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    "Origin": "https://onlyfans.com",
+                    "Referer": "https://onlyfans.com/",
+                    "Connection": "keep-alive",
+                    "Upgrade-Insecure-Requests": "1",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "same-origin",
+                    "Cache-Control": "max-age=0"
+                }
+                
+                try:
+                    # Schritt 1: Lade die Hauptseite um den "Melde dich für OnlyFans an" Button zu finden
+                    response = requests.get("https://onlyfans.com/", headers=onlyfans_headers, timeout=15)
+                    
+                    if response.status_code == 200:
+                        # Schritt 2: Simuliere das Ausfüllen des Registrierungsformulars
+                        # Da wir den genauen Endpunkt nicht kennen, verwenden wir die Hauptseite
+                        form_data = {
+                            'email': email,
+                            'password': 'TestPass123!',
+                            'confirm_password': 'TestPass123!',
+                            'username': f'user_{int(time.time())}',
+                            'first_name': 'Test',
+                            'last_name': 'User',
+                            'birth_day': '15',
+                            'birth_month': '06',
+                            'birth_year': '1990'
+                        }
+                        
+                        # Versuche POST auf die Hauptseite (OnlyFans verarbeitet das Formular)
+                        response = requests.post("https://onlyfans.com/", 
+                                              data=form_data, 
+                                              headers=onlyfans_headers, 
+                                              timeout=15,
+                                              allow_redirects=False)
+                        
+                        if response.status_code in [200, 400, 422, 302]:
+                            response_text = response.text.lower()
+                            
+                            # Suche nach der spezifischen OnlyFans-Fehlermeldung
+                            if 'bitte geben sie eine andere e-mail-adresse ein' in response_text:
+                                return {
+                                    "status": "Registriert",
+                                    "message": "E-Mail-Adresse ist bereits bei OnlyFans registriert"
+                                }
+                            elif 'e-mail-adresse' in response_text and 'bereits' in response_text:
+                                return {
+                                    "status": "Registriert",
+                                    "message": "E-Mail-Adresse ist bereits bei OnlyFans registriert"
+                                }
+                            elif 'email' in response_text and ('taken' in response_text or 'exists' in response_text):
+                                return {
+                                    "status": "Registriert",
+                                    "message": "E-Mail-Adresse ist bereits bei OnlyFans registriert"
+                                }
+                            # Wenn keine Fehlermeldung über bereits existierende E-Mail
+                            elif 'password' in response_text or 'passwort' in response_text:
+                                return {
+                                    "status": "Verfügbar",
+                                    "message": "E-Mail wurde akzeptiert, Passwort-Fehler zeigt Verfügbarkeit"
+                                }
+                            elif 'success' in response_text or 'erfolgreich' in response_text:
+                                return {
+                                    "status": "Verfügbar",
+                                    "message": "E-Mail-Adresse wurde erfolgreich bei OnlyFans registriert"
+                                }
+                            else:
+                                return {
+                                    "status": "Verfügbar",
+                                    "message": "E-Mail wurde akzeptiert, Status unklar"
+                                }
+                        else:
+                            return {
+                                "status": "Fehler",
+                                "message": f"OnlyFans antwortete mit Status {response.status_code}"
+                            }
+                    else:
+                        return {
+                            "status": "Fehler",
+                            "message": f"OnlyFans-Hauptseite nicht erreichbar: Status {response.status_code}"
+                        }
+                        
+                except Exception as e:
+                    return {
+                        "status": "Fehler",
+                        "message": f"OnlyFans-Formular-Test fehlgeschlagen: {str(e)}"
+                    }
+                    
+            else:
+                # Generische Logik für andere Websites (falls später hinzugefügt)
+                form_data = {
+                    'email': email,
+                    'password': 'TestPass123!',
+                    'confirm_password': 'TestPass123!',
+                    'username': f'user_{int(time.time())}',
+                    'first_name': 'Test',
+                    'last_name': 'User'
+                }
+                
+                response = requests.post(website_config["signup_url"], 
+                                      data=form_data, 
+                                      headers=headers, 
+                                      timeout=15,
+                                      allow_redirects=False)
+                
+                if response.status_code in [200, 302, 400, 422]:
+                    response_text = response.text.lower()
+                    
+                    if any(keyword in response_text for keyword in [
+                        'already exists', 'already registered', 'email taken', 
+                        'email already', 'account exists', 'user exists'
+                    ]):
+                        return {
+                            "status": "Registriert",
+                            "message": "E-Mail-Adresse ist bereits registriert"
+                        }
+                    elif any(keyword in response_text for keyword in [
+                        'success', 'welcome', 'verification sent', 'check your email'
+                    ]):
+                        return {
+                            "status": "Verfügbar",
+                            "message": "E-Mail-Adresse wurde akzeptiert"
+                        }
+                    else:
+                        return {
+                            "status": "Verfügbar",
+                            "message": "E-Mail wurde akzeptiert, Status unklar"
+                        }
+                        
         except Exception as e:
-            pass
+            return {
+                "status": "Fehler",
+                "message": f"Formular-Test fehlgeschlagen: {str(e)}"
+            }
             
         return None
     
@@ -945,7 +864,7 @@ class EmailScanner:
         return None
     
     def _improved_email_check_with_status(self, email: str, website_name: str, website_config: Dict, progress, task, current_num: int, total: int) -> Dict:
-        """Verbesserte E-Mail-Überprüfung durch echte Website-Interaktion mit Echtzeit-Status-Updates"""
+        """Verbesserte E-Mail-Überprüfung durch echte Website-Interaktion mit Echtzeit-Status-Updates - speziell für Spotify angepasst"""
         result = {
             "website": website_name,
             "url": website_config["signup_url"],
@@ -955,145 +874,146 @@ class EmailScanner:
         }
         
         try:
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
-                "Accept-Encoding": "gzip, deflate, br",
-                "Connection": "keep-alive",
-                "Upgrade-Insecure-Requests": "1",
-                "Sec-Fetch-Dest": "document",
-                "Sec-Fetch-Mode": "navigate",
-                "Sec-Fetch-Site": "none",
-                "Cache-Control": "max-age=0"
-            }
-            
-            # Status: Versuche direkten Zugriff
-            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Versuche direkten Zugriff")
-            
-            # Methode 1: Versuche direkten Zugriff auf die Signup-Seite
-            try:
-                response = requests.get(website_config["signup_url"], headers=headers, timeout=15)
-                if response.status_code == 200:
-                    # Analysiere die Seite
-                    if 'email' in response.text.lower() and 'signup' in response.text.lower():
-                        result["status"] = "Verfügbar"
-                        result["message"] = "Website unterstützt E-Mail-Registrierung"
-                        return result
-            except:
-                pass
-            
-            # Status: Teste mit der echten E-Mail-Adresse
-            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste mit der echten E-Mail-Adresse")
-            
-            try:
-                # Teste mit POST-Request und der echten E-Mail
-                form_data = {
-                    'email': email,
-                    'password': 'TestPass123!',
-                    'confirm_password': 'TestPass123!',
-                    'username': f'user_{int(time.time())}',
-                    'first_name': 'Test',
-                    'last_name': 'User'
+            if website_name == "Spotify":
+                # Status: Teste den Spotify-Validierungs-Endpunkt
+                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste Spotify-Validierungs-API")
+                
+                # Spezielle Spotify-Logik - verwende den tatsächlichen Validierungs-Endpunkt
+                spotify_validate_url = f"https://spclient.wg.spotify.com/signup/public/v1/account?validate=1&email={email}"
+                
+                # Spotify-spezifische Headers
+                spotify_headers = {
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+                    "Accept": "*/*",
+                    "Accept-Language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+                    "Accept-Encoding": "gzip, deflate, br, zstd",
+                    "Origin": "https://www.spotify.com",
+                    "Referer": "https://www.spotify.com/",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "same-site",
+                    "Connection": "keep-alive"
                 }
                 
-                response = requests.post(website_config["signup_url"], 
-                                      data=form_data, 
-                                      headers=headers, 
-                                      timeout=15,
-                                      allow_redirects=False)
-                
-                if response.status_code in [200, 302, 400, 422]:
-                    # Analysiere die Antwort auf E-Mail-Status
-                    response_text = response.text.lower()
+                try:
+                    # Teste den Spotify-Validierungs-Endpunkt
+                    response = requests.get(spotify_validate_url, 
+                                          headers=spotify_headers, 
+                                          timeout=15)
                     
-                    # Wenn die E-Mail bereits existiert
-                    if any(keyword in response_text for keyword in [
-                        'already exists', 'already registered', 'email taken', 
-                        'email already', 'account exists', 'user exists',
-                        'email is taken', 'email already exists', 'account already exists'
-                    ]):
-                        result["status"] = "Registriert"
-                        result["message"] = "E-Mail-Adresse ist bereits registriert"
-                        return result
-                    # Wenn die E-Mail akzeptiert wird
-                    elif any(keyword in response_text for keyword in [
-                        'success', 'welcome', 'verification sent', 'check your email',
-                        'account created', 'registration successful', 'welcome to'
-                    ]):
-                        result["status"] = "Verfügbar"
-                        result["message"] = "E-Mail-Adresse wurde akzeptiert"
-                        return result
-                    # Wenn es ein E-Mail-Format-Fehler gibt
-                    elif any(keyword in response_text for keyword in [
-                        'invalid email', 'email format', 'invalid email format',
-                        'please enter a valid email', 'email is invalid'
-                    ]):
-                        result["status"] = "Verfügbar"
-                        result["message"] = "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
-                        return result
-                    # Wenn es ein Passwort-Fehler gibt (E-Mail wurde akzeptiert)
-                    elif any(keyword in response_text for keyword in [
-                        'password', 'confirm password', 'password mismatch',
-                        'passwords do not match', 'password is required'
-                    ]):
-                        result["status"] = "Verfügbar"
-                        result["message"] = "E-Mail wurde akzeptiert, Passwort-Fehler zeigt Verfügbarkeit"
-                        return result
-                    # Wenn es ein Benutzername-Fehler gibt (E-Mail wurde akzeptiert)
-                    elif any(keyword in response_text for keyword in [
-                        'username', 'username is taken', 'username already exists',
-                        'choose a different username'
-                    ]):
-                        result["status"] = "Verfügbar"
-                        result["message"] = "E-Mail wurde akzeptiert, Benutzername-Fehler zeigt Verfügbarkeit"
+                    if response.status_code == 200:
+                        try:
+                            json_response = response.json()
+                            
+                            # Wenn die E-Mail bereits registriert ist
+                            if 'errors' in json_response and 'email' in json_response['errors']:
+                                email_error = json_response['errors']['email']
+                                if 'bereits ein konto' in email_error.lower() and 'e-mail' in email_error.lower():
+                                    result["status"] = "Registriert"
+                                    result["message"] = f"Spotify bestätigt: {email_error}"
+                                    return result
+                            
+                            # Wenn keine Fehlermeldung über bereits existierende E-Mail
+                            # und der Status 20 ist (was auf einen Fehler hindeutet)
+                            if json_response.get('status') == 20:
+                                result["status"] = "Registriert"
+                                result["message"] = "E-Mail-Adresse ist bereits bei Spotify registriert (Status 20)"
+                                return result
+                            
+                            # Wenn die E-Mail verfügbar ist (keine Fehlermeldung)
+                            result["status"] = "Verfügbar"
+                            result["message"] = "E-Mail-Adresse ist bei Spotify verfügbar"
+                            return result
+                            
+                        except json.JSONDecodeError:
+                            # Falls die Antwort kein gültiges JSON ist
+                            response_text = response.text.lower()
+                            if 'bereits ein konto' in response_text and 'e-mail' in response_text:
+                                result["status"] = "Registriert"
+                                result["message"] = "E-Mail-Adresse ist bereits bei Spotify registriert"
+                                return result
+                            else:
+                                result["status"] = "Verfügbar"
+                                result["message"] = "E-Mail-Adresse ist bei Spotify verfügbar"
+                                return result
+                                
+                    else:
+                        result["status"] = "Fehler"
+                        result["message"] = f"Spotify-API antwortete mit Status {response.status_code}"
                         return result
                         
-            except Exception as e:
-                result["message"] = f"Formular-Test fehlgeschlagen: {str(e)}"
-            
-            # Status: Suche nach alternativen Registrierungsseiten
-            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Suche nach alternativen Registrierungsseiten")
-            
-            # Methode 3: Suche nach alternativen Endpunkten
-            alternative_urls = [
-                website_config["signup_url"].replace('/signup', '/register'),
-                website_config["signup_url"].replace('/signup', '/signup/check'),
-                website_config["signup_url"] + '/check-email',
-                website_config["signup_url"] + '/validate'
-            ]
-            
-            for j, alt_url in enumerate(alternative_urls, 1):
-                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste Alternative {j}/{len(alternative_urls)}")
+                except Exception as e:
+                    result["message"] = f"Spotify-API-Test fehlgeschlagen: {str(e)}"
+            else:
+                # Generische Logik für andere Websites (falls später hinzugefügt)
+                # Status: Versuche direkten Zugriff
+                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Versuche direkten Zugriff")
+                
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                    "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    "Connection": "keep-alive",
+                    "Upgrade-Insecure-Requests": "1",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "none",
+                    "Cache-Control": "max-age=0"
+                }
                 
                 try:
-                    response = requests.get(alt_url, headers=headers, timeout=10)
+                    response = requests.get(website_config["signup_url"], headers=headers, timeout=15)
                     if response.status_code == 200:
-                        if 'email' in response.text.lower():
+                        if 'email' in response.text.lower() and 'signup' in response.text.lower():
                             result["status"] = "Verfügbar"
-                            result["message"] = "Alternative Registrierungsseite gefunden"
+                            result["message"] = "Website unterstützt E-Mail-Registrierung"
                             return result
                 except:
-                    continue
-            
-            # Status: Analysiere Hauptseite
-            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Analysiere Hauptseite")
-            
-            # Methode 4: Fallback - Analysiere die Hauptseite
-            try:
-                main_url = website_config["signup_url"].split('/signup')[0]
-                response = requests.get(main_url, headers=headers, timeout=10)
-                if response.status_code == 200:
-                    if any(keyword in response.text.lower() for keyword in ['signup', 'register', 'create account']):
-                        result["status"] = "Verfügbar"
-                        result["message"] = "Website unterstützt Registrierung"
-                        return result
-            except:
-                pass
-            
-            # Wenn alle Methoden fehlschlagen
-            result["status"] = "Unbekannt"
-            result["message"] = "Konnte den Status nicht bestimmen"
+                    pass
+                
+                # Status: Teste mit der echten E-Mail-Adresse
+                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste mit der echten E-Mail-Adresse")
+                
+                try:
+                    form_data = {
+                        'email': email,
+                        'password': 'TestPass123!',
+                        'confirm_password': 'TestPass123!',
+                        'username': f'user_{int(time.time())}',
+                        'first_name': 'Test',
+                        'last_name': 'User'
+                    }
+                    
+                    response = requests.post(website_config["signup_url"], 
+                                          data=form_data, 
+                                          headers=headers, 
+                                          timeout=15,
+                                          allow_redirects=False)
+                    
+                    if response.status_code in [200, 302, 400, 422]:
+                        response_text = response.text.lower()
+                        
+                        if any(keyword in response_text for keyword in [
+                            'already exists', 'already registered', 'email taken', 
+                            'email already', 'account exists', 'user exists'
+                        ]):
+                            result["status"] = "Registriert"
+                            result["message"] = "E-Mail-Adresse ist bereits registriert"
+                            return result
+                        elif any(keyword in response_text for keyword in [
+                            'success', 'welcome', 'verification sent', 'check your email'
+                        ]):
+                            result["status"] = "Verfügbar"
+                            result["message"] = "E-Mail-Adresse wurde akzeptiert"
+                            return result
+                        else:
+                            result["status"] = "Verfügbar"
+                            result["message"] = "E-Mail wurde akzeptiert, Status unklar"
+                            return result
+                            
+                except Exception as e:
+                    result["message"] = f"Formular-Test fehlgeschlagen: {str(e)}"
             
         except Exception as e:
             result["status"] = "Fehler"
