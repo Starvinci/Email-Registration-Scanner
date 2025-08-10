@@ -6,7 +6,8 @@ Eine CLI-basierte Python-Anwendung zum Überprüfen von E-Mail-Adressen auf vers
 
 - **ASCII-Art Banner**: Schöner "Email Scanner" Banner mit "RS made by tim ^2"
 - **E-Mail-Validierung**: Überprüfung der E-Mail-Adress-Formatierung
-- **Website-Scanning**: Überprüfung auf 8 beliebten Websites
+- **Website-Scanning**: Überprüfung auf konfigurierten Websites
+- **OSINT-Fallback-Tools**: Automatische Nutzung von Holehe, Maigret und Sherlock nach eigener Auswertung
 - **Interaktiver Modus**: Benutzerfreundliche CLI-Oberfläche mit klarer Navigation
 - **Berichtsexport**: Export in JSON oder TXT-Format
 - **Reports-Ordner**: Automatische Speicherung aller Berichte in einem strukturierten Ordner
@@ -59,7 +60,8 @@ E-Mail-Scanner - Hauptmenü
 1. E-Mail-Adresse scannen
 2. Verfügbare Websites anzeigen
 3. Berichte anzeigen
-4. Beenden
+4. OSINT-Tools Status anzeigen
+5. Beenden
 ============================================================
 ```
 
@@ -84,18 +86,27 @@ Bericht exportieren
 
 ## 🖥️ Verfügbare Websites
 
-Die Anwendung überprüft E-Mail-Adressen auf folgenden Websites:
+Die Anwendung überprüft E-Mail-Adressen auf konfigurierten Websites (aktuell: Spotify, OnlyFans).
 
-| Website | Beschreibung |
-|---------|--------------|
-| **GitHub** | Plattform für Software-Entwicklung und Versionskontrolle |
-| **Twitter** | Soziales Netzwerk für Mikroblogging und Nachrichten |
-| **LinkedIn** | Berufliches Netzwerk für Karriere und Geschäftskontakte |
-| **Facebook** | Soziales Netzwerk für persönliche Verbindungen |
-| **Instagram** | Plattform für Foto- und Video-Sharing |
-| **Reddit** | Community-Plattform für Diskussionen und Content-Sharing |
-| **Discord** | Kommunikationsplattform für Gaming und Communities |
-| **Spotify** | Musik-Streaming-Plattform |
+## 🔍 OSINT-Fallback-Tools
+
+Nach der eigenen E-Mail-Auswertung werden automatisch verfügbare OSINT-Tools als Fallback verwendet:
+
+### Verfügbare Tools
+| Tool | Beschreibung | Installation |
+|------|--------------|--------------|
+| **Holehe** | E-Mail-Überprüfung bei großen Websites (Twitter, Instagram, Spotify, etc.) | `sudo apt install holehe` |
+| **Maigret** | Umfassende Suche in hunderten sozialen Netzwerken | `git clone https://github.com/soxoj/maigret && cd maigret && pip install -r requirements.txt` |
+| **Sherlock** | Username-Suche (wird aus E-Mail extrahiert) | `git clone https://github.com/sherlock-project/sherlock.git && cd sherlock && pip install -r requirements.txt` |
+
+### Funktionsweise
+1. **Eigene Auswertung**: Zuerst wird die E-Mail mit der eigenen Website-Überprüfung gescannt
+2. **OSINT-Fallback**: Nach Abschluss der eigenen Auswertung startet automatisch der OSINT-Scan
+3. **Kombinierte Ergebnisse**: Alle Ergebnisse werden in einem einheitlichen Format zusammengeführt
+4. **Automatische Erkennung**: Verfügbare Tools werden automatisch erkannt und genutzt
+
+### Tool-Status anzeigen
+Im Hauptmenü unter "4. OSINT-Tools Status anzeigen" können Sie den Status der verfügbaren Tools einsehen.
 
 ## 📁 Reports-Ordner
 
@@ -203,6 +214,7 @@ Verbesserungsvorschläge und Bug-Reports sind willkommen!
 
 ## 🔮 Zukünftige Features
 
+- [x] OSINT-Fallback-Tools (Holehe, Maigret, Sherlock)
 - [ ] Erweiterte API-Integration
 - [ ] Proxy-Unterstützung
 - [ ] Batch-Verarbeitung mehrerer E-Mails
@@ -210,3 +222,4 @@ Verbesserungsvorschläge und Bug-Reports sind willkommen!
 - [ ] Datenbank-Integration für Verlaufsverfolgung
 - [ ] Berichtssuche und -filterung
 - [ ] Automatische Berichtslöschung nach Zeitraum
+- [ ] Weitere OSINT-Tools integrieren
