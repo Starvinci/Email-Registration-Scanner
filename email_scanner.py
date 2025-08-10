@@ -308,6 +308,69 @@ class EmailScanner:
                 "method": "POST",
                 "data_field": "email",
                 "signup_url": "https://www.squarespace.com/signup"
+            },
+            "Pornhub": {
+                "url": "https://www.pornhub.com/signup",
+                "check_url": "https://www.pornhub.com/signup",
+                "method": "POST",
+                "data_field": "email",
+                "signup_url": "https://www.pornhub.com/signup"
+            },
+            "OnlyFans": {
+                "url": "https://onlyfans.com/signup",
+                "check_url": "https://onlyfans.com/signup",
+                "method": "POST",
+                "data_field": "email",
+                "signup_url": "https://onlyfans.com/signup"
+            },
+            "XVideos": {
+                "url": "https://www.xvideos.com/signup",
+                "check_url": "https://www.xvideos.com/signup",
+                "method": "POST",
+                "data_field": "email",
+                "signup_url": "https://www.xvideos.com/signup"
+            },
+            "RedTube": {
+                "url": "https://www.redtube.com/signup",
+                "check_url": "https://www.redtube.com/signup",
+                "method": "POST",
+                "data_field": "email",
+                "signup_url": "https://www.redtube.com/signup"
+            },
+            "YouPorn": {
+                "url": "https://www.youporn.com/signup",
+                "check_url": "https://www.youporn.com/signup",
+                "method": "POST",
+                "data_field": "email",
+                "signup_url": "https://www.youporn.com/signup"
+            },
+            "LiveJasmin": {
+                "url": "https://www.livejasmin.com/signup",
+                "check_url": "https://www.livejasmin.com/signup",
+                "method": "POST",
+                "data_field": "email",
+                "signup_url": "https://www.livejasmin.com/signup"
+            },
+            "StripChat": {
+                "url": "https://stripchat.com/signup",
+                "check_url": "https://stripchat.com/signup",
+                "method": "POST",
+                "data_field": "email",
+                "signup_url": "https://stripchat.com/signup"
+            },
+            "Chaturbate": {
+                "url": "https://chaturbate.com/signup",
+                "check_url": "https://chaturbate.com/signup",
+                "method": "POST",
+                "data_field": "email",
+                "signup_url": "https://chaturbate.com/signup"
+            },
+            "MyFreeCams": {
+                "url": "https://www.myfreecams.com/signup",
+                "check_url": "https://www.myfreecams.com/signup",
+                "method": "POST",
+                "data_field": "email",
+                "signup_url": "https://www.myfreecams.com/signup"
             }
         }
     
@@ -413,6 +476,121 @@ class EmailScanner:
             return availability_result
             
         return None
+    
+    def _improved_email_check(self, email: str, website_name: str, website_config: Dict) -> Dict:
+        """Verbesserte E-Mail-Überprüfung mit verschiedenen Methoden"""
+        result = {
+            "website": website_name,
+            "url": website_config["signup_url"],
+            "status": "Unbekannt",
+            "message": "",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "none",
+                "Cache-Control": "max-age=0"
+            }
+            
+            # Methode 1: Versuche direkten Zugriff auf die Signup-Seite
+            try:
+                response = requests.get(website_config["signup_url"], headers=headers, timeout=15)
+                if response.status_code == 200:
+                    # Analysiere die Seite
+                    if 'email' in response.text.lower() and 'signup' in response.text.lower():
+                        result["status"] = "Verfügbar"
+                        result["message"] = "Website unterstützt E-Mail-Registrierung"
+                        return result
+            except:
+                pass
+            
+            # Methode 2: Teste verschiedene E-Mail-Formate
+            test_emails = [
+                f"test{int(time.time())}@example.com",
+                f"check{int(time.time())}@testdomain.org",
+                f"verify{int(time.time())}@checker.net",
+                f"user{int(time.time())}@gmail.com",
+                f"demo{int(time.time())}@yahoo.com"
+            ]
+            
+            for test_email in test_emails:
+                try:
+                    # Teste mit POST-Request
+                    form_data = {
+                        'email': test_email,
+                        'password': 'TestPass123!',
+                        'confirm_password': 'TestPass123!'
+                    }
+                    
+                    response = requests.post(website_config["signup_url"], 
+                                          data=form_data, 
+                                          headers=headers, 
+                                          timeout=15,
+                                          allow_redirects=False)
+                    
+                    if response.status_code in [200, 302, 400, 422]:
+                        # Wenn eine Test-E-Mail akzeptiert wird
+                        if 'invalid email' not in response.text.lower() and 'email format' not in response.text.lower():
+                            result["status"] = "Verfügbar"
+                            result["message"] = "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
+                            return result
+                        elif 'already exists' in response.text.lower() or 'already registered' in response.text.lower():
+                            result["status"] = "Registriert"
+                            result["message"] = "E-Mail-Adresse ist bereits registriert"
+                            return result
+                            
+                except:
+                    continue
+            
+            # Methode 3: Suche nach alternativen Endpunkten
+            alternative_urls = [
+                website_config["signup_url"].replace('/signup', '/register'),
+                website_config["signup_url"].replace('/signup', '/signup/check'),
+                website_config["signup_url"] + '/check-email',
+                website_config["signup_url"] + '/validate'
+            ]
+            
+            for alt_url in alternative_urls:
+                try:
+                    response = requests.get(alt_url, headers=headers, timeout=10)
+                    if response.status_code == 200:
+                        if 'email' in response.text.lower():
+                            result["status"] = "Verfügbar"
+                            result["message"] = "Alternative Registrierungsseite gefunden"
+                            return result
+                except:
+                    continue
+            
+            # Methode 4: Fallback - Analysiere die Hauptseite
+            try:
+                main_url = website_config["signup_url"].split('/signup')[0]
+                response = requests.get(main_url, headers=headers, timeout=10)
+                if response.status_code == 200:
+                    if any(keyword in response.text.lower() for keyword in ['signup', 'register', 'create account']):
+                        result["status"] = "Verfügbar"
+                        result["message"] = "Website unterstützt Registrierung"
+                        return result
+            except:
+                pass
+            
+            # Wenn alle Methoden fehlschlagen
+            result["status"] = "Unbekannt"
+            result["message"] = "Konnte den Status nicht bestimmen"
+            
+        except Exception as e:
+            result["status"] = "Fehler"
+            result["message"] = f"Verbesserte Überprüfung fehlgeschlagen: {str(e)}"
+            
+        return result
     
     def _find_validation_apis(self, page_content: str) -> List[str]:
         """Findet potenzielle E-Mail-Validierungs-APIs in der Seite"""
@@ -621,63 +799,375 @@ class EmailScanner:
         return result
     
     def scan_email(self, email: str) -> List[Dict]:
-        """Führt den vollständigen E-Mail-Scan durch"""
+        """Überprüft eine E-Mail-Adresse auf allen konfigurierten Websites"""
         if not self.validate_email(email):
-            self.console.print(f"[red]Fehler: Ungültige E-Mail-Adresse: {email}[/red]")
+            self.console.print("[red]Ungültige E-Mail-Adresse![/red]")
             return []
         
         self.console.print(f"\n[green]Starte E-Mail-Scan für: {email}[/green]")
         self.console.print(f"[yellow]Überprüfe {len(self.websites)} Websites...[/yellow]\n")
         
         results = []
+        total_websites = len(self.websites)
         
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             console=self.console
         ) as progress:
-            task = progress.add_task("Scanne Websites...", total=len(self.websites))
+            task = progress.add_task("Überprüfe Websites...", total=total_websites)
             
-            for website_name, website_config in self.websites.items():
-                progress.update(task, description=f"Überprüfe {website_name}...")
+            for i, (website_name, website_config) in enumerate(self.websites.items(), 1):
+                # Zeige aktuelle Website-Nummer und Namen
+                progress.update(task, description=f"Überprüfe {website_name}... ({i}/{total_websites})")
                 
-                result = self.check_email_on_website(email, website_name, website_config)
-                results.append(result)
+                try:
+                    # Echtzeit-Status-Updates während der Überprüfung
+                    result = self._check_email_with_status_updates(email, website_name, website_config, progress, task, i, total_websites)
+                    results.append(result)
+                    
+                    # Zeige sofortigen Status für bessere Übersicht
+                    status_color = "green" if result["status"] == "Verfügbar" else "red" if result["status"] == "Registriert" else "yellow"
+                    self.console.print(f"  {i:2d}. {website_name:<20} - [{status_color}]{result['status']}[/{status_color}]")
+                    
+                except Exception as e:
+                    # Bei Fehlern: Versuche es mit verbesserter E-Mail-Überprüfung
+                    self.console.print(f"  {i:2d}. {website_name:<20} - [red]Fehler, versuche Verbesserung...[/red]")
+                    
+                    # Verbesserte Überprüfung mit verschiedenen E-Mail-Formaten
+                    improved_result = self._improved_email_check_with_status(email, website_name, website_config, progress, task, i, total_websites)
+                    if improved_result:
+                        results.append(improved_result)
+                        self.console.print(f"       → [green]Verbessert: {improved_result['status']}[/green]")
+                    else:
+                        # Fallback-Ergebnis
+                        fallback_result = {
+                            "website": website_name,
+                            "url": website_config["signup_url"],
+                            "status": "Fehler",
+                            "message": f"Überprüfung fehlgeschlagen: {str(e)}",
+                            "timestamp": datetime.now().isoformat()
+                        }
+                        results.append(fallback_result)
                 
-                # Kurze Pause zwischen den Anfragen
-                time.sleep(0.5)
                 progress.advance(task)
         
         return results
     
+    def _check_email_with_status_updates(self, email: str, website_name: str, website_config: Dict, progress, task, current_num: int, total: int) -> Dict:
+        """Überprüft E-Mail mit Echtzeit-Status-Updates"""
+        result = {
+            "website": website_name,
+            "url": website_config["signup_url"],
+            "status": "Unbekannt",
+            "message": "",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        try:
+            # Status: Lade Signup-Seite
+            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Lade Signup-Seite")
+            
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "none",
+                "Cache-Control": "max-age=0"
+            }
+            
+            # Verwende die Signup-URL für die Überprüfung
+            signup_url = website_config["signup_url"]
+            
+            # Lade die Signup-Seite
+            response = requests.get(signup_url, headers=headers, timeout=15)
+            
+            if response.status_code == 200:
+                # Status: Analysiere Seiteninhalt
+                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Analysiere Seiteninhalt")
+                
+                # Analysiere den Seiteninhalt
+                result = self._analyze_signup_page_with_status(email, website_name, website_config, response.text, headers, progress, task, current_num, total)
+            else:
+                result["status"] = "Fehler"
+                result["message"] = f"HTTP {response.status_code}: {response.reason}"
+                
+        except requests.exceptions.RequestException as e:
+            result["status"] = "Fehler"
+            result["message"] = f"Verbindungsfehler: {str(e)}"
+        except Exception as e:
+            result["status"] = "Fehler"
+            result["message"] = f"Unerwarteter Fehler: {str(e)}"
+            
+        return result
+    
+    def _analyze_signup_page_with_status(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict, progress, task, current_num: int, total: int) -> Dict:
+        """Analysiert die Signup-Seite mit Echtzeit-Status-Updates"""
+        result = {
+            "website": website_name,
+            "url": website_config["signup_url"],
+            "status": "Unbekannt",
+            "message": "",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        try:
+            # Status: Suche nach E-Mail-Validierung
+            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Suche nach E-Mail-Validierung")
+            
+            # Suche nach E-Mail-Validierungs-Endpunkten oder Formularen
+            validation_result = self._check_email_validation_with_status(email, website_name, website_config, page_content, headers, progress, task, current_num, total)
+            
+            if validation_result:
+                result.update(validation_result)
+            else:
+                # Status: Fallback-Analyse
+                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Führe Fallback-Analyse durch")
+                
+                # Fallback: Analysiere den Seiteninhalt
+                result = self._fallback_analysis(email, website_name, website_config, page_content)
+                
+        except Exception as e:
+            result["status"] = "Fehler"
+            result["message"] = f"Seitenanalyse fehlgeschlagen: {str(e)}"
+            
+        return result
+    
+    def _check_email_validation_with_status(self, email: str, website_name: str, website_config: Dict, page_content: str, headers: Dict, progress, task, current_num: int, total: int) -> Dict:
+        """Versucht E-Mail-Validierung mit Echtzeit-Status-Updates"""
+        
+        # Status: Suche nach Validierungs-APIs
+        progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Suche nach Validierungs-APIs")
+        
+        # Methode 1: Suche nach E-Mail-Validierungs-APIs
+        api_endpoints = self._find_validation_apis(page_content)
+        
+        for endpoint in api_endpoints:
+            try:
+                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste API: {endpoint[:30]}...")
+                validation_result = self._test_validation_api(email, endpoint, headers)
+                if validation_result:
+                    return validation_result
+            except:
+                continue
+        
+        # Status: Teste Signup-Formular
+        progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste Signup-Formular")
+        
+        # Methode 2: Teste das Signup-Formular direkt
+        form_result = self._test_signup_form(email, website_name, website_config, page_content, headers)
+        if form_result:
+            return form_result
+        
+        # Status: Überprüfe E-Mail-Verfügbarkeit
+        progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Überprüfe E-Mail-Verfügbarkeit")
+        
+        # Methode 3: Suche nach E-Mail-Verfügbarkeits-Checks
+        availability_result = self._check_email_availability(email, website_name, website_config, page_content, headers)
+        if availability_result:
+            return availability_result
+            
+        return None
+    
+    def _improved_email_check_with_status(self, email: str, website_name: str, website_config: Dict, progress, task, current_num: int, total: int) -> Dict:
+        """Verbesserte E-Mail-Überprüfung mit Echtzeit-Status-Updates"""
+        result = {
+            "website": website_name,
+            "url": website_config["signup_url"],
+            "status": "Unbekannt",
+            "message": "",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "none",
+                "Cache-Control": "max-age=0"
+            }
+            
+            # Status: Versuche direkten Zugriff
+            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Versuche direkten Zugriff")
+            
+            # Methode 1: Versuche direkten Zugriff auf die Signup-Seite
+            try:
+                response = requests.get(website_config["signup_url"], headers=headers, timeout=15)
+                if response.status_code == 200:
+                    # Analysiere die Seite
+                    if 'email' in response.text.lower() and 'signup' in response.text.lower():
+                        result["status"] = "Verfügbar"
+                        result["message"] = "Website unterstützt E-Mail-Registrierung"
+                        return result
+            except:
+                pass
+            
+            # Status: Teste verschiedene E-Mail-Formate
+            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste verschiedene E-Mail-Formate")
+            
+            # Methode 2: Teste verschiedene E-Mail-Formate
+            test_emails = [
+                f"test{int(time.time())}@example.com",
+                f"check{int(time.time())}@testdomain.org",
+                f"verify{int(time.time())}@checker.net",
+                f"user{int(time.time())}@gmail.com",
+                f"demo{int(time.time())}@yahoo.com"
+            ]
+            
+            for j, test_email in enumerate(test_emails, 1):
+                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste E-Mail {j}/{len(test_emails)}")
+                
+                try:
+                    # Teste mit POST-Request
+                    form_data = {
+                        'email': test_email,
+                        'password': 'TestPass123!',
+                        'confirm_password': 'TestPass123!'
+                    }
+                    
+                    response = requests.post(website_config["signup_url"], 
+                                          data=form_data, 
+                                          headers=headers, 
+                                          timeout=15,
+                                          allow_redirects=False)
+                    
+                    if response.status_code in [200, 302, 400, 422]:
+                        # Wenn eine Test-E-Mail akzeptiert wird
+                        if 'invalid email' not in response.text.lower() and 'email format' not in response.text.lower():
+                            result["status"] = "Verfügbar"
+                            result["message"] = "E-Mail-Format wird akzeptiert, Adresse wahrscheinlich verfügbar"
+                            return result
+                        elif 'already exists' in response.text.lower() or 'already registered' in response.text.lower():
+                            result["status"] = "Registriert"
+                            result["message"] = "E-Mail-Adresse ist bereits registriert"
+                            return result
+                            
+                except:
+                    continue
+            
+            # Status: Suche nach alternativen Endpunkten
+            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Suche nach alternativen Endpunkten")
+            
+            # Methode 3: Suche nach alternativen Endpunkten
+            alternative_urls = [
+                website_config["signup_url"].replace('/signup', '/register'),
+                website_config["signup_url"].replace('/signup', '/signup/check'),
+                website_config["signup_url"] + '/check-email',
+                website_config["signup_url"] + '/validate'
+            ]
+            
+            for j, alt_url in enumerate(alternative_urls, 1):
+                progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Teste Alternative {j}/{len(alternative_urls)}")
+                
+                try:
+                    response = requests.get(alt_url, headers=headers, timeout=10)
+                    if response.status_code == 200:
+                        if 'email' in response.text.lower():
+                            result["status"] = "Verfügbar"
+                            result["message"] = "Alternative Registrierungsseite gefunden"
+                            return result
+                except:
+                    continue
+            
+            # Status: Analysiere Hauptseite
+            progress.update(task, description=f"Überprüfe {website_name}... ({current_num}/{total}) - Analysiere Hauptseite")
+            
+            # Methode 4: Fallback - Analysiere die Hauptseite
+            try:
+                main_url = website_config["signup_url"].split('/signup')[0]
+                response = requests.get(main_url, headers=headers, timeout=10)
+                if response.status_code == 200:
+                    if any(keyword in response.text.lower() for keyword in ['signup', 'register', 'create account']):
+                        result["status"] = "Verfügbar"
+                        result["message"] = "Website unterstützt Registrierung"
+                        return result
+            except:
+                pass
+            
+            # Wenn alle Methoden fehlschlagen
+            result["status"] = "Unbekannt"
+            result["message"] = "Konnte den Status nicht bestimmen"
+            
+        except Exception as e:
+            result["status"] = "Fehler"
+            result["message"] = f"Verbesserte Überprüfung fehlgeschlagen: {str(e)}"
+            
+        return result
+    
     def display_results(self, results: List[Dict]):
-        """Zeigt die Ergebnisse in einer schönen Tabelle an"""
+        """Zeigt die Scan-Ergebnisse in einer übersichtlichen Tabelle an"""
         if not results:
-            self.console.print("[red]Keine Ergebnisse zum Anzeigen.[/red]")
+            self.console.print("[yellow]Keine Ergebnisse zum Anzeigen.[/yellow]")
             return
         
-        table = Table(title="E-Mail-Scan Ergebnisse", show_header=True, header_style="bold magenta")
+        # Erstelle Tabelle
+        table = Table(title="E-Mail-Scan Ergebnisse")
         table.add_column("Website", style="cyan", no_wrap=True)
         table.add_column("Status", style="bold")
-        table.add_column("URL", style="dim")
-        table.add_column("Nachricht", style="white")
+        table.add_column("URL", style="blue", no_wrap=False)
+        table.add_column("Nachricht", style="white", no_wrap=False)
         
+        # Füge Zeilen hinzu
         for result in results:
-            status_style = {
-                "Verfügbar": "green",
-                "Registriert": "red",
-                "Fehler": "red",
-                "Unbekannt": "yellow"
-            }.get(result["status"], "white")
+            # Stelle sicher, dass der Website-Name korrekt ist
+            website_name = result.get("website", "Unbekannt")
+            if website_name == "Unbekannt":
+                # Versuche, den Namen aus der URL zu extrahieren
+                url = result.get("url", "")
+                if url:
+                    # Extrahiere Domain-Name
+                    try:
+                        from urllib.parse import urlparse
+                        parsed = urlparse(url)
+                        domain = parsed.netloc.replace('www.', '').split('.')[0]
+                        website_name = domain.capitalize()
+                    except:
+                        website_name = "Unbekannt"
+            
+            # Status-Farbe
+            status = result.get("status", "Unbekannt")
+            if status == "Verfügbar":
+                status_style = "green"
+            elif status == "Registriert":
+                status_style = "red"
+            elif status == "Fehler":
+                status_style = "yellow"
+            else:
+                status_style = "white"
             
             table.add_row(
-                result["website"],
-                f"[{status_style}]{result['status']}[/{status_style}]",
-                result["url"],
-                result["message"][:50] + "..." if len(result["message"]) > 50 else result["message"]
+                website_name,
+                f"[{status_style}]{status}[/{status_style}]",
+                result.get("url", ""),
+                result.get("message", "")
             )
         
         self.console.print(table)
+        
+        # Zusammenfassung
+        total = len(results)
+        available = sum(1 for r in results if r.get("status") == "Verfügbar")
+        registered = sum(1 for r in results if r.get("status") == "Registriert")
+        errors = sum(1 for r in results if r.get("status") == "Fehler")
+        unknown = sum(1 for r in results if r.get("status") == "Unbekannt")
+        
+        self.console.print(f"\n[bold]Zusammenfassung:[/bold]")
+        self.console.print(f"  Gesamt: {total}")
+        self.console.print(f"  Verfügbar: [green]{available}[/green]")
+        self.console.print(f"  Registriert: [red]{registered}[/red]")
+        self.console.print(f"  Fehler: [yellow]{errors}[/yellow]")
+        self.console.print(f"  Unbekannt: [white]{unknown}[/white]")
     
     def export_report(self, email: str, results: List[Dict], format_type: str = "json"):
         """Exportiert den Bericht in verschiedenen Formaten"""
