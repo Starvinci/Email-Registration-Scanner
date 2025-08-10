@@ -1,0 +1,232 @@
+{
+  "websites": {
+    "GitHub": {
+      "url": "https://github.com/signup",
+      "check_url": "https://github.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Twitter": {
+      "url": "https://twitter.com/i/flow/signup",
+      "check_url": "https://api.twitter.com/1.1/users/lookup.json",
+      "method": "GET",
+      "data_field": "screen_name"
+    },
+    "LinkedIn": {
+      "url": "https://www.linkedin.com/signup",
+      "check_url": "https://www.linkedin.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Facebook": {
+      "url": "https://www.facebook.com/signup",
+      "check_url": "https://www.facebook.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Instagram": {
+      "url": "https://www.instagram.com/accounts/emailsignup/",
+      "check_url": "https://www.instagram.com/accounts/emailsignup/",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Reddit": {
+      "url": "https://www.reddit.com/register/",
+      "check_url": "https://www.reddit.com/register/",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Discord": {
+      "url": "https://discord.com/register",
+      "check_url": "https://discord.com/register",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Spotify": {
+      "url": "https://www.spotify.com/de/signup/",
+      "check_url": "https://www.spotify.com/de/signup/",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Netflix": {
+      "url": "https://www.netflix.com/signup",
+      "check_url": "https://www.netflix.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Amazon": {
+      "url": "https://www.amazon.de/ap/register",
+      "check_url": "https://www.amazon.de/ap/register",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Microsoft": {
+      "url": "https://signup.live.com/signup",
+      "check_url": "https://signup.live.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Google": {
+      "url": "https://accounts.google.com/signup",
+      "check_url": "https://accounts.google.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Apple": {
+      "url": "https://appleid.apple.com/account",
+      "check_url": "https://appleid.apple.com/account",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Dropbox": {
+      "url": "https://www.dropbox.com/register",
+      "check_url": "https://www.dropbox.com/register",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Slack": {
+      "url": "https://slack.com/signin",
+      "check_url": "https://slack.com/signin",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Trello": {
+      "url": "https://trello.com/signup",
+      "check_url": "https://trello.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Notion": {
+      "url": "https://www.notion.so/login",
+      "check_url": "https://www.notion.so/login",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Figma": {
+      "url": "https://www.figma.com/signup",
+      "check_url": "https://www.figma.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Canva": {
+      "url": "https://www.canva.com/register",
+      "check_url": "https://www.canva.com/register",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Zoom": {
+      "url": "https://zoom.us/signup",
+      "check_url": "https://zoom.us/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Skype": {
+      "url": "https://signup.live.com/signup",
+      "check_url": "https://signup.live.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Telegram": {
+      "url": "https://telegram.org/",
+      "check_url": "https://telegram.org/",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "WhatsApp": {
+      "url": "https://www.whatsapp.com/",
+      "check_url": "https://www.whatsapp.com/",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Snapchat": {
+      "url": "https://accounts.snapchat.com/accounts/signup",
+      "check_url": "https://accounts.snapchat.com/accounts/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "TikTok": {
+      "url": "https://www.tiktok.com/signup",
+      "check_url": "https://www.tiktok.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Pinterest": {
+      "url": "https://www.pinterest.com/signup/",
+      "check_url": "https://www.pinterest.com/signup/",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Twitch": {
+      "url": "https://www.twitch.tv/signup",
+      "check_url": "https://www.twitch.tv/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Steam": {
+      "url": "https://store.steampowered.com/join/",
+      "check_url": "https://store.steampowered.com/join/",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Epic Games": {
+      "url": "https://www.epicgames.com/id/register",
+      "check_url": "https://www.epicgames.com/id/register",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Uber": {
+      "url": "https://auth.uber.com/login",
+      "check_url": "https://auth.uber.com/login",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Airbnb": {
+      "url": "https://www.airbnb.com/signup",
+      "check_url": "https://www.airbnb.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Booking.com": {
+      "url": "https://account.booking.com/sign-up",
+      "check_url": "https://account.booking.com/sign-up",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "PayPal": {
+      "url": "https://www.paypal.com/signin",
+      "check_url": "https://www.paypal.com/signin",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Stripe": {
+      "url": "https://dashboard.stripe.com/register",
+      "check_url": "https://dashboard.stripe.com/register",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Shopify": {
+      "url": "https://accounts.shopify.com/signup",
+      "check_url": "https://accounts.shopify.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "WordPress": {
+      "url": "https://wordpress.com/start/user",
+      "check_url": "https://wordpress.com/start/user",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Wix": {
+      "url": "https://www.wix.com/signup",
+      "check_url": "https://www.wix.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    },
+    "Squarespace": {
+      "url": "https://www.squarespace.com/signup",
+      "check_url": "https://www.squarespace.com/signup",
+      "method": "POST",
+      "data_field": "email"
+    }
+  }
+}
