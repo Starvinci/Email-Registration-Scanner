@@ -86,7 +86,7 @@ Bericht exportieren
 
 ##  Verfügbare Websites
 
-Die Anwendung überprüft E-Mail-Adressen auf konfigurierten Websites (aktuell: Spotify, OnlyFans).
+Die Anwendung überprüft E-Mail-Adressen auf konfigurierten Websites (aktuell: Spotify, ).
 
 ##  OSINT-Fallback-Tools
 
