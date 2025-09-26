@@ -4,7 +4,7 @@ Eine CLI-basierte Python-Anwendung zum Überprüfen von E-Mail-Adressen auf vers
 
 ##  Features
 
-- **ASCII-Art Banner**: Schöner "Email Scanner" Banner mit "RS made by tim ^2"
+
 - **E-Mail-Validierung**: Überprüfung der E-Mail-Adress-Formatierung
 - **Website-Scanning**: Überprüfung auf konfigurierten Websites
 - **OSINT-Fallback-Tools**: Automatische Nutzung von Holehe, Maigret und Sherlock nach eigener Auswertung
