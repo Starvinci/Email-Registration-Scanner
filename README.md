@@ -2,7 +2,7 @@
 
 Eine CLI-basierte Python-Anwendung zum Überprüfen von E-Mail-Adressen auf verschiedenen Websites.
 
-## 🎯 Features
+##  Features
 
 - **ASCII-Art Banner**: Schöner "Email Scanner" Banner mit "RS made by tim ^2"
 - **E-Mail-Validierung**: Überprüfung der E-Mail-Adress-Formatierung
@@ -14,7 +14,7 @@ Eine CLI-basierte Python-Anwendung zum Überprüfen von E-Mail-Adressen auf vers
 - **Farbige Ausgabe**: Moderne Terminal-Ausgabe mit Rich-Bibliothek
 - **Fortschrittsanzeige**: Visueller Fortschritt während des Scannings
 
-## 🚀 Installation
+##  Installation
 
 ### Voraussetzungen
 - Python 3.7 oder höher
@@ -25,7 +25,7 @@ Eine CLI-basierte Python-Anwendung zum Überprüfen von E-Mail-Adressen auf vers
 pip install -r requirements.txt
 ```
 
-## 📖 Verwendung
+##  Verwendung
 
 ### Interaktiver Modus
 ```bash
@@ -48,7 +48,7 @@ python email_scanner.py -e test@example.com --export txt
 python email_scanner.py --no-banner
 ```
 
-## 🖥️ CLI-Navigation
+##  CLI-Navigation
 
 Die Anwendung bietet eine klare, strukturierte Navigation:
 
@@ -84,11 +84,11 @@ Bericht exportieren
 4. Kein Export
 ```
 
-## 🖥️ Verfügbare Websites
+##  Verfügbare Websites
 
 Die Anwendung überprüft E-Mail-Adressen auf konfigurierten Websites (aktuell: Spotify, OnlyFans).
 
-## 🔍 OSINT-Fallback-Tools
+##  OSINT-Fallback-Tools
 
 Nach der eigenen E-Mail-Auswertung werden automatisch verfügbare OSINT-Tools als Fallback verwendet:
 
@@ -108,7 +108,7 @@ Nach der eigenen E-Mail-Auswertung werden automatisch verfügbare OSINT-Tools al
 ### Tool-Status anzeigen
 Im Hauptmenü unter "4. OSINT-Tools Status anzeigen" können Sie den Status der verfügbaren Tools einsehen.
 
-## 📁 Reports-Ordner
+##  Reports-Ordner
 
 Alle Berichte werden automatisch im `reports/` Ordner gespeichert:
 
@@ -122,7 +122,7 @@ reports/
 
 **Dateinamen-Format**: `email_scan_{E-Mail}_at_{Domain}_{Timestamp}.{Format}`
 
-## 📊 Berichtsformate
+##  Berichtsformate
 
 ### JSON-Export
 ```json
@@ -159,7 +159,7 @@ Nachricht: E-Mail-Adresse kann für Registrierung verwendet werden
 --------------------------------------------------
 ```
 
-## ⚙️ Konfiguration
+##  Konfiguration
 
 Die Websites können in der `websites_config.json` Datei angepasst werden. Jede Website benötigt:
 
@@ -169,7 +169,7 @@ Die Websites können in der `websites_config.json` Datei angepasst werden. Jede 
 - `data_field`: Feldname für die E-Mail-Adresse
 - `description`: Beschreibung der Website
 
-## 🔧 Entwicklung
+##  Entwicklung
 
 ### Projektstruktur
 ```
@@ -190,7 +190,7 @@ ESRS/
 - `rich`: Moderne Terminal-Ausgabe
 - `art`: ASCII-Art Generierung
 
-## ⚠️ Hinweise
+##  Hinweise
 
 - **Rate Limiting**: Die Anwendung implementiert Pausen zwischen Anfragen
 - **User-Agent**: Verwendet einen realistischen Browser-User-Agent
@@ -198,21 +198,21 @@ ESRS/
 - **Datenschutz**: Überprüft nur öffentlich verfügbare Informationen
 - **Reports-Ordner**: Wird automatisch erstellt, falls nicht vorhanden
 
-## 📝 Lizenz
+##  Lizenz
 
 RS made by tim ^2
 
-## 🤝 Beitragen
+##  Beitragen
 
 Verbesserungsvorschläge und Bug-Reports sind willkommen!
 
-## 🐛 Bekannte Probleme
+##  Bekannte Probleme
 
 - Einige Websites blockieren automatisierte Anfragen
 - API-Limits können die Überprüfung beeinträchtigen
 - Status-Erkennung basiert auf einfachen Heuristiken
 
-## 🔮 Zukünftige Features
+##  Zukünftige Features
 
 - [x] OSINT-Fallback-Tools (Holehe, Maigret, Sherlock)
 - [ ] Erweiterte API-Integration
